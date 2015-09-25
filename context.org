@@ -1,0 +1,37 @@
+* Kwoon App
+** Initial Setup
+Rails 4 rspec pundit sorcery bootstrap postgresql
+Gemfile with lots of defaults for common things
+*** AC
+1. have steps for bootstrapping a basic rails app set up how I like it
+2. default configurations for gems that should be set up early
+3. rails server command works
+4. database set up, initial migrations run
+5. rspec runs
+*** Steps
+**** > rails new kwoon --database=postgresql --skip-test-unit
+**** configure Gemfile
+**** > bundle install
+**** > rake db:create
+**** > rails server
+it works now
+**** [75%] run install generators for:
+***** DONE rspec:install
+be rails g rspec:install
+***** TODO pundit:install
+optional, just generates an application policy with defaults.
+holding off for now
+***** DONE sorcery:install
+be rails g sorcery:install reset_password user_activation
+****** DONE configure mailer for user_activation
+***** DONE simple_form:install
+be rails g simple_form:install --bootstrap
+****** caveat
+Be sure to have a copy of the Bootstrap stylesheet available on your application, you can get it on http://getbootstrap.com/.
+
+Inside your views, use the 'simple_form_for' with one of the Bootstrap form classes, '.form-horizontal' or '.form-inline', as the following:
+
+= simple_form_for(@user, html: { class: 'form-horizontal' }) do |form|
+**** TODO configure bootstrap
+https://github.com/twbs/bootstrap-sass
+** Log In as Admin
