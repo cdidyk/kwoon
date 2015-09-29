@@ -20,9 +20,11 @@ gem 'pundit'
 gem 'bootstrap-sass'
 gem 'simple_form'
 gem 'slim-rails'
+gem 'jquery-rails', '~> 4.0.5'
 gem 'sorcery', '~> 0.9.1'
 gem 'virtus', require: false
 gem 'whiny_validation'
+gem 'validates_email_format_of', '~> 1.6.3'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
@@ -51,5 +53,5 @@ group :development do
 end
 
 group :test do
-  gem 'shoulda-matchers', require: false
+  gem 'shoulda-matchers', '~> 3.0.0.rc1', require: false
 end

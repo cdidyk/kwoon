@@ -1,4 +1,4 @@
 --color
 --format documentation
 --require pry
---require spec_helper
+--require rails_helper

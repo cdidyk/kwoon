@@ -1,37 +1,52 @@
 * Kwoon App
-** Initial Setup
+** Release 1
+*** DONE App is Bootstrapped
 Rails 4 rspec pundit sorcery bootstrap postgresql
 Gemfile with lots of defaults for common things
-*** AC
-1. have steps for bootstrapping a basic rails app set up how I like it
-2. default configurations for gems that should be set up early
-3. rails server command works
-4. database set up, initial migrations run
-5. rspec runs
-*** Steps
-**** > rails new kwoon --database=postgresql --skip-test-unit
-**** configure Gemfile
-**** > bundle install
-**** > rake db:create
-**** > rails server
+**** [5/5] AC
+1. [X] have steps for bootstrapping a basic rails app set up how I like it
+2. [X] default configurations for gems that should be set up early
+3. [X] rails server command works
+4. [X] database set up, initial migrations run
+5. [X] rspec runs
+**** Steps
+***** > rails new kwoon --database=postgresql --skip-test-unit
+***** configure Gemfile
+***** > bundle install
+***** > rake db:create
+***** > rails server
 it works now
-**** [75%] run install generators for:
-***** DONE rspec:install
+***** [75%] run install generators for:
+****** DONE rspec:install
 be rails g rspec:install
-***** TODO pundit:install
+****** TODO pundit:install
 optional, just generates an application policy with defaults.
 holding off for now
-***** DONE sorcery:install
+****** DONE sorcery:install
 be rails g sorcery:install reset_password user_activation
-****** DONE configure mailer for user_activation
-***** DONE simple_form:install
+******* DONE configure mailer for user_activation
+****** DONE simple_form:install
 be rails g simple_form:install --bootstrap
-****** caveat
+******* caveat
 Be sure to have a copy of the Bootstrap stylesheet available on your application, you can get it on http://getbootstrap.com/.
 
 Inside your views, use the 'simple_form_for' with one of the Bootstrap form classes, '.form-horizontal' or '.form-inline', as the following:
 
 = simple_form_for(@user, html: { class: 'form-horizontal' }) do |form|
+***** configure bootstrap
+https://github.com/twbs/bootstrap-sass
+will do as separate story (Site is not hideous)
+*** DONE Admin can Log In/Out
+**** [100%] AC
+1. [X] db seeded with admin user
+2. [X] login form on home page with email and password
+3. [X] can log in and see /users (or /user/:id ?), which only authenticated users can see
+4. [X] /users has log out link
+5. [X] clicking log out brings you back to login page and you can't see /users
+*** TODO Interested Person can submit a Student Application
+*** TODO Approved Applicant can register for a Class
+*** TODO Admin can manage users
+*** TODO Admin can view applications
+*** TODO Site is not hideous
 **** TODO configure bootstrap
 https://github.com/twbs/bootstrap-sass
-** Log In as Admin

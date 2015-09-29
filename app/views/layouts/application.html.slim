@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    title Kwoon
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+
+  body
+    - if current_user
+      .logout
+        = button_to "Log out", :logout, method: :delete
+    = yield

@@ -1,0 +1,14 @@
+h2 Users
+
+table.user-list
+  thead
+    tr
+      th Name
+      th Email
+      th Admin
+  tbody
+    - @users.each do |user|
+      tr
+        td = user.display_name
+        td = user.email
+        td = user.admin?
