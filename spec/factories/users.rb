@@ -1,7 +1,6 @@
 FactoryGirl.define do
   factory :user do
-    first_name Faker::Hacker.adjective
-    last_name Faker::Hacker.noun
-    email Faker::Internet.email
+    name Faker::Name.name
+    email
   end
 end

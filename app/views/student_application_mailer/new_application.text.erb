@@ -1,0 +1,26 @@
+Dear Sifu,
+
+We just received the following application at shaolinstpete.com:
+
+Name: <%= @application.user.name %>
+Email: <%= @application.user.email %>
+Phone: <%= @application.phone %>
+Address: <%= @application.address %>
+Emergency Contact: <%= @application.emergency_contact_name %> (<%= @application.emergency_contact_phone %>)
+
+Previous Wahnam Courses: <%= @application.wahnam_courses %>
+
+Previous Martial Arts Experience: <%= @application.martial_arts_experience %>
+
+About Me: <%= @application.bio %>
+
+Health Issues: <%= @application.health_issues %>
+
+Why Shaolin? <%= @application.why_shaolin %>
+
+Agree to Follow 10 Shaolin Laws: <%= @application.ten_shaolin_laws ? 'Yes' : 'No' %>
+
+
+Kind Regards,
+
+shaolinstpete.com

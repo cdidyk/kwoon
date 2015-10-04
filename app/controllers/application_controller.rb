@@ -4,4 +4,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_filter :require_login
+
+  def logged_in_home
+    users_path
+  end
 end

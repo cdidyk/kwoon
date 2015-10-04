@@ -1,0 +1,22 @@
+h2 Student Application
+
+= simple_form_for @application do |f|
+  = f.simple_fields_for :user do |uf|
+    = uf.input :name, label: 'Your name'
+    = uf.input :email
+  = f.input :phone, label: 'Phone number'
+  = f.input :address
+
+  fieldset
+    legend Emergency Contact
+    = f.input :emergency_contact_name, label: 'Name'
+    = f.input :emergency_contact_phone, label: 'Phone number'
+
+  = f.input :wahnam_courses, label: 'Classes and courses taken previously from Shaolin Wahnam', hint: "Please include the following if you remember it: course title, year, location, instructor"
+  = f.input :martial_arts_experience, label: 'Previous martial arts experience'
+  = f.input :health_issues, label: 'Any relevant health issues'
+  = f.input :bio, label: 'Tell us a little about yourself'
+  = f.input :why_shaolin, label: 'Why Shaolin Kung Fu? How do you want your Shaolin Kung Fu practice to affect your life?'
+  = f.input :ten_shaolin_laws, inline_label: 'Do you agree to live by the 10 Shaolin Laws?'
+
+  = f.button :submit, 'Submit Application'

@@ -44,9 +44,36 @@ will do as separate story (Site is not hideous)
 4. [X] /users has log out link
 5. [X] clicking log out brings you back to login page and you can't see /users
 *** TODO Interested Person can submit a Student Application
+**** [3/4] Acceptance Criteria
+- [X] non-logged in users can visit the application page
+- [X] the application page has some instructions and the application
+  form (all fields required):
+  - Name
+  - Address
+  - Phone number
+  - Email
+  - Emergency Contact Name and Phone number
+  - Shaolin Wahnam courses previously taken (title, year,
+    location, instructor for each, suggested but not required)
+  - Previous martial arts experience
+  - Relevant health issues
+  - A little about yourself
+  - Why Shaolin Kung Fu? How do you want your Shaolin Kung Fu
+    practice to affect your life?
+  - Do you agree to live by the 10 Shaoln Laws?
+- [-] submitting a valid application:
+  - [X] saves the application to the db
+  - [X] creates a user for the application
+  - [ ] sends a confirmation email to the applicant
+  - [ ] emails the application to me
+  - [X] displays a thank you/confirmation screen
+- [X] submitting an invalid application redisplays the application form with instructions for fixing it
 *** TODO Approved Applicant can register for a Class
 *** TODO Admin can manage users
 *** TODO Admin can view applications
 *** TODO Site is not hideous
 **** TODO configure bootstrap
 https://github.com/twbs/bootstrap-sass
+*** TODO Deploy to production
+** Backlog
+*** View applications through the site

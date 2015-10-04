@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   #get 'users' => 'users#index', as: :users
   resources :users, only: [:index]
   resources :sessions, only: [:new, :create, :destroy]
+  resources :applications, only: [:new, :create]
+
+  get 'applications/confirmation' => 'applications#confirmation', as: 'application_confirmation'
+
   get 'login' => 'sessions#new'
   post 'login' => 'sessions#create'
   delete 'logout' => 'sessions#destroy'
