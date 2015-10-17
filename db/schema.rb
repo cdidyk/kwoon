@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151004025418) do
+ActiveRecord::Schema.define(version: 20151103160324) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,60 @@ ActiveRecord::Schema.define(version: 20151004025418) do
 
   add_index "applications", ["user_id"], name: "index_applications_on_user_id", using: :btree
 
+  create_table "contract_plans", force: :cascade do |t|
+    t.string   "title",                      null: false
+    t.integer  "total",                      null: false
+    t.integer  "deposit",                    null: false
+    t.integer  "payment_amount", default: 0
+    t.string   "stripe_id"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "contract_plans", ["stripe_id"], name: "index_contract_plans_on_stripe_id", using: :btree
+
+  create_table "contracts", force: :cascade do |t|
+    t.integer  "user_id",                    null: false
+    t.string   "title",                      null: false
+    t.string   "status",                     null: false
+    t.datetime "start_date",                 null: false
+    t.datetime "end_date",                   null: false
+    t.integer  "total",                      null: false
+    t.integer  "balance",                    null: false
+    t.integer  "payment_amount", default: 0
+    t.string   "stripe_id"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "contracts", ["user_id", "status"], name: "index_contracts_on_user_id_and_status", using: :btree
+
+  create_table "course_contract_plans", force: :cascade do |t|
+    t.integer "course_id",        null: false
+    t.integer "contract_plan_id", null: false
+  end
+
+  add_index "course_contract_plans", ["contract_plan_id"], name: "index_course_contract_plans_on_contract_plan_id", using: :btree
+  add_index "course_contract_plans", ["course_id"], name: "index_course_contract_plans_on_course_id", using: :btree
+
+  create_table "courses", force: :cascade do |t|
+    t.string   "title",                  null: false
+    t.text     "description"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.datetime "first_installment_date"
+  end
+
+  create_table "registrations", force: :cascade do |t|
+    t.integer "user_id",   null: false
+    t.integer "course_id", null: false
+  end
+
+  add_index "registrations", ["course_id"], name: "index_registrations_on_course_id", using: :btree
+  add_index "registrations", ["user_id"], name: "index_registrations_on_user_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                                           null: false
     t.string   "crypted_password"
@@ -48,10 +102,12 @@ ActiveRecord::Schema.define(version: 20151004025418) do
     t.datetime "activation_token_expires_at"
     t.boolean  "admin",                           default: false
     t.string   "name"
+    t.string   "stripe_id"
   end
 
   add_index "users", ["activation_token"], name: "index_users_on_activation_token", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", using: :btree
+  add_index "users", ["stripe_id"], name: "index_users_on_stripe_id", using: :btree
 
 end

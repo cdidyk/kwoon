@@ -2,6 +2,9 @@ class User < ActiveRecord::Base
   authenticates_with_sorcery!
 
   has_one :application
+  has_many :registrations, inverse_of: :user
+  has_many :courses, through: :registrations
+  has_many :contracts
 
   validates :name, presence: true
   validates :email,

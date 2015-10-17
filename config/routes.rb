@@ -4,11 +4,20 @@ Rails.application.routes.draw do
   resources :sessions, only: [:new, :create, :destroy]
   resources :applications, only: [:new, :create]
 
-  get 'applications/confirmation' => 'applications#confirmation', as: 'application_confirmation'
+  get 'applications/confirmation' => 'applications#confirmation',
+      as: 'application_confirmation'
+
+  get 'courses/:course_id/registrations/confirmation' => 'registrations#confirmation',
+      as: 'course_registration_confirmation'
+  resources :courses, only: [] do
+    resources :registrations, only: [:new, :create]
+  end
 
   get 'login' => 'sessions#new'
   post 'login' => 'sessions#create'
   delete 'logout' => 'sessions#destroy'
+
+  get 'info' => 'info#index'
 
   root 'sessions#new'
 

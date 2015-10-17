@@ -43,8 +43,8 @@ will do as separate story (Site is not hideous)
 3. [X] can log in and see /users (or /user/:id ?), which only authenticated users can see
 4. [X] /users has log out link
 5. [X] clicking log out brings you back to login page and you can't see /users
-*** TODO Interested Person can submit a Student Application
-**** [3/4] Acceptance Criteria
+*** DONE Interested Person can submit a Student Application
+**** [4/4] Acceptance Criteria
 - [X] non-logged in users can visit the application page
 - [X] the application page has some instructions and the application
   form (all fields required):
@@ -61,19 +61,177 @@ will do as separate story (Site is not hideous)
   - Why Shaolin Kung Fu? How do you want your Shaolin Kung Fu
     practice to affect your life?
   - Do you agree to live by the 10 Shaoln Laws?
-- [-] submitting a valid application:
+- [X] submitting a valid application:
   - [X] saves the application to the db
   - [X] creates a user for the application
-  - [ ] sends a confirmation email to the applicant
-  - [ ] emails the application to me
+  - [X] sends a confirmation email to the applicant
+  - [X] emails the application to me
   - [X] displays a thank you/confirmation screen
 - [X] submitting an invalid application redisplays the application form with instructions for fixing it
-*** TODO Approved Applicant can register for a Class
-*** TODO Admin can manage users
-*** TODO Admin can view applications
+*** DONE Approved Applicant can register for a Course
+For now, no UI for approving an application. I'm comfortable doing it from the
+commandline console as follows:
+1. u = User.find id
+2. c = Course.find id
+3. t = TokenService.generate_course_invite_token user: u, course: c
+4. RegistrationMailer.invite(u, c, t).deliver_later
+**** [6/6] Acceptance Criteria
+- [X] Admin can send an email registration invite for a course
+  - [X] email includes a registration link with an invite token
+  - [X] invite token is a JWT with user id and course id (expiration is 3 months
+    from issuance of token)
+- [X] registration page has some basic course and student info
+  - [X] name of course, start and end date
+  - [X] student name
+- [X] registration page has form with (all required):
+  - [X] hidden field for token (to associate student and course with
+    registration)?
+- [X] submitting a valid registration
+  - [X] creates a registration for the student and course
+  - [X] displays a confirmation/thank you page
+  - [X] sends a confirmation/thank you email
+- [X] visiting a registration link with an expired token displays an error
+  message that the user needs to contact me for a new course invite
+- [X] visiting a registration link with a token for a student who has already
+  registered displays a message that the student has already registered
+*** DONE Applicant pays for Course during registration
+**** Design
+***** Plans
+Stripe subscriptions DO meet our needs after all. (Plans should be set up in
+Stripe)
+****** Pay in Full (Course)
+- no subscription, just a simple one-time charge
+- create customer with CC
+****** Monthly (Course)
+- one-time charge for deposit
+- create customer with CC
+- subscription for monthly amount with trial end set to the day before the first
+  payment (payment_start_date set on Course?).
+- User Contract maintains balance which is updated from charge.succeeded web
+  hook
+- contract id in subscription metadata?
+****** Annual Membership
+- annual subscription with trial end set to the day before the first of the
+  month
+- create customer with CC
+****** Monthly (Membership)
+- monthly subscription with trial end set to the day before the first of the
+  month
+- create customer with CC
+***** Flow
+1. js intercepts registration form submission and sends CC info to Stripe and
+   gets back either the stripeToken or validation errors
+2. js callback submits the registration form with the stripeToken (and no CC
+   info). It still submits if there are errors with the CC but the app makes
+   sure not to save the registration, just validate it so all form errors can be
+   displayed at the same time.
+3. app server creates stripe customer for user and subscribes her to stripe plan
+   associated with the selected contract. For pay-in-full, just do the stripe
+   charge and handle errors or create the registration if all is good. For
+   the subscription-based contracts, successful subscription creation means
+   successful charge (failures raise errors), so handle errors or create the
+   registration if all is good. Create the contract and associate it with the
+   stripe subscription if there is one.
+4. app server listens for invoice.payment_succeeded web hook to update
+   installment plan-based contracts (Monthly Course contracts). When the
+   Contract balance is 0, it cancels the stripe subscription
+**** [12/12] Plan of Attack
+1. [X] create contract model: user id, title, status, total, balance,
+   payment amount, start date, end date, stripe id
+2. [X] course registration form includes hard-coded payment plan dropdowns with
+   prices (monthly or pay-in-full) and creates a contract on valid submission
+3. [X] course registration form submits CC info to stripe, retrieves stripe
+   token, and submits registration form for real with stripe token
+4. [X] spike integrating stripe for pay-in-full plan
+5. [X] spike integrating stripe for monthly plan
+6. [X] Courses have first_installment_date field
+7. [X] convert Contract::TEMPLATES into a model (ContractPlan?)
+8. [X] associate Courses with ContractPlans
+9. [X] replace Contract::TEMPLATES bits with ContractPlans
+10. [X] determine testing strategy (WebMock, VCR, integration vs. unit tests)
+11. [X] implement happy path charging based on spikes
+12. [X] identify sad paths for charging based on spikes
+**** [9/9] Acceptance Criteria
+- [X] course registration form includes (both required)
+  - [X] payment plan dropdown with prices (monthly or pay-in-full)
+  - [X] CC payment info
+- [X] submitting a valid registration for pay-in-full
+  - [X] creates a stripe charge
+  - [X] creates a stripe customer for the user if she doesn't already have one
+  - [X] creates a contract for the user with total = full amount, balance = 0,
+    payment_amount = 0, start date and end date equal to course's, and status =
+    'future'
+- [X] submitting a valid registration for monthly plan
+  - [X] creates a stripe charge
+  - [X] creates a stripe customer for the user if she doesn't already have one
+  - [X] creates a contract for the user with total = full amount, balance =
+    total - deposit, payment_amount = monthly charge, start date and end date
+    equal to course's, and status = 'future'
+- [X] doesn't register the user or create a contract if the stripe charge fails
+- [X] display validation errors when the stripe token for the credit card info
+  can't be created
+- [X] display validation errors if the stripe charge fails
+- [X] handle errors raised from stripe failures (customer, subscription, card,
+  and charge are all potentially created)
+- [X] handle when a card is declined
+- [X] have no selected payment plan fail validation instead of crash
+*** TODO App updates contracts on stripe charges
+Stripe will automatically handle subscription billing, but we need to track
+status of installment plans to determine when to cancel a subscription. We can
+do this through stripe webhooks
+**** [0/5] Acceptance Criteria
+- [ ] When a subscription payment is made, a stripe webhook is configured to
+  send a notification to a designated route in the app
+- [ ] contracts whose status is "future" have their status changed to "active"
+  when a contract payment is made (should it error if the payment happens
+  outside of the contract's date range?)
+- [ ] the payment amount is subtracted from the contract's balance
+- [ ] if the contract is paid off, the subscription is canceled (what
+  notifications do I want?)
+- [ ] a daily email is sent to me reporting any such activity that day (no email
+  is sent if there is no activity)
 *** TODO Site is not hideous
 **** TODO configure bootstrap
 https://github.com/twbs/bootstrap-sass
+*** TODO Copy is in place
+**** [0/4] Acceptance Criteria
+- [ ] Application Confirmation email
+- [ ] Registration Invite email
+- [ ] Course Registration page
+- [ ] ?
+*** TODO Audit Release
 *** TODO Deploy to production
+**** TODO Cannibalize Capfile for course_registration app
+**** TODO Make sure log rotation is set up
+**** TODO Make sure db backup is set up
+**** DONE Look into site-wide SSL certificate
+or at least transferring the current secure.shaolinstpete.com one
+***** Result
+It looks like I have a current SSL for shaolinstpete.com which I may be able to
+use for www.shaolinstpete.com, too.
+**** [0/4] Set up SSL for shaolinstpete.com
+***** TODO Generate a CSR for shaolinstpete.com
+***** TODO Follow set up instructions
+***** TODO Document how to do for my linode and where everything is
+***** TODO Check whether it works for both shaolinstpete.com and www.shaolinstpete.com
 ** Backlog
-*** View applications through the site
+*** Integration Tests for Registration
+*** App auto-sends renewal notice emails
+*** Admin can manage users
+*** Admin can view and approve applications through the site
+*** Enrolled students receive renewal notices before their current subscription expires
+*** Admin can send emails to different groupings of users
+Some grouping ideas:
+- approved applicants who haven't registered for a course
+- current ongoing students
+- inactive students
+- current course-enrolled students
+*** Student can renew a contract
+should be able to use existing or new payment info to renew or register for a course
+*** Specific instances of courses can be tracked as part of overall courses
+In other words, the app recognizes that someone taking the Level 1 course in Jan
+2016 and someone who took the Level 1 course in Jan 2017 both took the Level 1
+course.
+
+Benefit is that we can track things like whether a student meets the
+pre-requisites for a course.

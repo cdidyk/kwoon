@@ -21,10 +21,13 @@ gem 'bootstrap-sass'
 gem 'simple_form'
 gem 'slim-rails'
 gem 'jquery-rails', '~> 4.0.5'
+gem 'lodash-rails', '~> 3.10.1'
 gem 'sorcery', '~> 0.9.1'
 gem 'virtus', require: false
 gem 'whiny_validation'
 gem 'validates_email_format_of', '~> 1.6.3'
+
+gem 'stripe', '~> 1.30.2'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
@@ -54,4 +57,6 @@ end
 
 group :test do
   gem 'shoulda-matchers', '~> 3.0.0.rc1', require: false
+  gem 'vcr', '~> 3.0.0'
+  gem 'webmock', '~> 1.22.3'
 end

@@ -1,6 +1,6 @@
 RSpec.describe StudentApplicationMailer, type: :mailer do
  describe ".confirmation" do
-   it "generates an email to the user with the subject: 'Application Received'" do
+   it "generates a confirmation email to the user" do
      user = build :user
 
      email = StudentApplicationMailer.
@@ -9,7 +9,7 @@ RSpec.describe StudentApplicationMailer, type: :mailer do
 
      expect(email.from).to eq(["no-reply@shaolinstpete.com"])
      expect(email.to).to eq([user.email])
-     expect(email.subject).to eq('Application Received')
+     expect(email.subject).to match(/application received/i)
    end
 
  end

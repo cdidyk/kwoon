@@ -4,7 +4,7 @@ class StudentApplicationMailer < ApplicationMailer
   def confirmation user
     @user = user
     mail to: user.email,
-         subject: "Application Received"
+         subject: "Shaolin Wahnam St Pete - Application Received"
   end
 
   def new_application application

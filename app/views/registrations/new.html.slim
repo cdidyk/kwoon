@@ -1,0 +1,17 @@
+h2 = "#{@course.title} Registration"
+h3 = @course.display_dates
+
+div
+  = "Welcome, #{@user.name}"
+
+= simple_form_for @registration, url: course_registrations_path(course_id: @course.id), html: { class: "new_registration payment_form"} do |f|
+  = hidden_field_tag :reg_token, params[:reg_token]
+  = f.input :user_id, as: :hidden, input_html: { value: "#{@user.id}" }
+  = select_tag :payment_plan, options_for_select(@payment_options), prompt: 'Choose a payment plan'
+  span class="help-block" = @custom_validations[:payment_plan]
+  = simple_fields_for :card do |cc_form|
+    = cc_form.input :number, input_html: { class: 'card_number', name: nil }
+    = cc_form.input :cvc, input_html: { class: 'card_cvc', name: nil }
+    = cc_form.input :exp_month, input_html: { class: 'card_exp_month', name: nil }
+    = cc_form.input :exp_year, input_html: { class: 'card_exp_year', name: nil }
+  = f.button :submit, "Register"
