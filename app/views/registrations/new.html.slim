@@ -7,11 +7,13 @@ div
 = simple_form_for @registration, url: course_registrations_path(course_id: @course.id), html: { class: "new_registration payment_form"} do |f|
   = hidden_field_tag :reg_token, params[:reg_token]
   = f.input :user_id, as: :hidden, input_html: { value: "#{@user.id}" }
-  = select_tag :payment_plan, options_for_select(@payment_options), prompt: 'Choose a payment plan'
+  = select_tag :payment_plan, options_for_select(@payment_options), prompt: 'Select a payment plan'
   span class="help-block" = @custom_validations[:payment_plan]
   = simple_fields_for :card do |cc_form|
-    = cc_form.input :number, input_html: { class: 'card_number', name: nil }
+    = cc_form.input :number, label: "Credit card number", input_html: { class: 'card_number', name: nil }
+    = cc_form.input :exp_month, label: "Expiration month", collection: @month_options, prompt: "Select month", label_method: :label, value_method: :value, input_html: { class: 'card_exp_month', name: nil }
+    = cc_form.input :exp_year, label: "Expiration year", collection: @year_options, prompt: "Select year", label_method: :label, value_method: :value, input_html: { class: 'card_exp_year', name: nil }
     = cc_form.input :cvc, input_html: { class: 'card_cvc', name: nil }
-    = cc_form.input :exp_month, input_html: { class: 'card_exp_month', name: nil }
-    = cc_form.input :exp_year, input_html: { class: 'card_exp_year', name: nil }
+    = cc_form.input :name, label: "Cardholder name", input_html: { class: 'card_name', name: nil }
+    = cc_form.input :address_zip, label: "Zip code", input_html: { class: 'card_address_zip', name: nil }
   = f.button :submit, "Register"

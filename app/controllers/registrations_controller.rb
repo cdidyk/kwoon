@@ -9,6 +9,8 @@ class RegistrationsController < ApplicationController
     @registration = Registration.new course: @course, user: @user
     @payment_options = @course.contract_plans.all.map(&:to_select_option)
     @custom_validations = {}
+    @month_options = month_options
+    @year_options = year_options
   end
 
   def create
@@ -17,6 +19,8 @@ class RegistrationsController < ApplicationController
     @registration = Registration.new course: @course, user: @user
     @payment_options = @course.contract_plans.all.map(&:to_select_option)
     @custom_validations = {}
+    @month_options = month_options
+    @year_options = year_options
 
     if @user.blank? or @course.blank? or (params[:registration] and @user.id != params[:registration][:user_id].to_i)
       flash[:alert] = MESSAGES[:bad_token]
@@ -65,6 +69,32 @@ class RegistrationsController < ApplicationController
     bad_token: "There is a problem with your registration invitation. Contact Sifu Chris for a new one.",
     already_registered: "You have already registered for this course. If you have reached this page in error, contact Sifu Chris Didyk."
   }
+
+  Option = Struct.new(:value, :label)
+
+  def month_options
+    [
+      Option.new(1, "January"),
+      Option.new(2, "February"),
+      Option.new(3, "March"),
+      Option.new(4, "April"),
+      Option.new(5, "May"),
+      Option.new(6, "June"),
+      Option.new(7, "July"),
+      Option.new(8, "August"),
+      Option.new(9, "September"),
+      Option.new(10, "October"),
+      Option.new(11, "November"),
+      Option.new(12, "December")
+    ]
+  end
+
+  def year_options
+    current_year = DateTime.now.year
+    (current_year..(current_year + 10)).map do |year|
+      Option.new year, year
+    end
+  end
 
   #TODO figure out if additional logging needs to happen for these 404s
   def validate_token

@@ -11,8 +11,10 @@ $(document).ready ->
     $cardFields = {
       number: $('.payment_form input.card_number')
       cvc: $('.payment_form input.card_cvc')
-      exp_month: $('.payment_form input.card_exp_month')
-      exp_year: $('.payment_form input.card_exp_year')
+      exp_month: $('.payment_form select.card_exp_month')
+      exp_year: $('.payment_form select.card_exp_year')
+      name: $('.payment_form input.card_name')
+      address_zip: $('.payment_form input.card_address_zip')
     }
     $submit = $(".payment_form input[type='submit']")
     $submit.attr("disabled", "disabled")
@@ -22,14 +24,16 @@ $(document).ready ->
       cvc: $cardFields.cvc.val()
       exp_month: $cardFields.exp_month.val()
       exp_year: $cardFields.exp_year.val()
+      name: $cardFields.name.val()
+      address_zip: $cardFields.address_zip.val()
     }, (status, response) ->
       if error = response.error
-        $errorMsg = $("input.card_#{error.param} ~ .help-block")
+        $errorMsg = $(":input.card_#{error.param} ~ .help-block")
         if not _.isEmpty $errorMsg
           $errorMsg.text error.message
         else
           $errorMsg = $("<span class='help-block'>#{error.message}</span>")
-          $("input.card_#{error.param}").after $errorMsg
+          $(":input.card_#{error.param}").after $errorMsg
         $submit.removeAttr 'disabled'
       else
         token = response.id

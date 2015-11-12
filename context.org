@@ -1,5 +1,5 @@
 * Kwoon App
-** Release 1
+** [54%] Release 1
 *** DONE App is Bootstrapped
 Rails 4 rspec pundit sorcery bootstrap postgresql
 Gemfile with lots of defaults for common things
@@ -175,6 +175,13 @@ Stripe)
   and charge are all potentially created)
 - [X] handle when a card is declined
 - [X] have no selected payment plan fail validation instead of crash
+*** DONE Use zip code and cardholder name on registration form
+**** [3/3] Acceptance Criteria
+- [X] zip code and cardholder name are on registration form and sent to stripe
+  with credit card data
+- [X] exp month is a dropdown of months (with numeric values)
+- [X] exp year is a dropdown with options ranging from the current year to 10
+  years ahead
 *** TODO App updates contracts on stripe charges
 Stripe will automatically handle subscription billing, but we need to track
 status of installment plans to determine when to cancel a subscription. We can
@@ -235,3 +242,4 @@ course.
 
 Benefit is that we can track things like whether a student meets the
 pre-requisites for a course.
+*** Student can pay directly from a bank account
