@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     resources :registrations, only: [:new, :create]
   end
 
+  post 'webhook' => 'stripe#webhook'
+
   get 'login' => 'sessions#new'
   post 'login' => 'sessions#create'
   delete 'logout' => 'sessions#destroy'

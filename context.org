@@ -186,9 +186,9 @@ Stripe)
 Stripe will automatically handle subscription billing, but we need to track
 status of installment plans to determine when to cancel a subscription. We can
 do this through stripe webhooks
-**** [0/6] Acceptance Criteria
-- [ ] When a subscription payment is made, a stripe webhook is configured to
-  send a notification to a designated route in the app
+**** [0/7] Acceptance Criteria
+- [ ] When a subscription payment is made (invoice.paid event), a stripe webhook
+  is configured to send a notification to a designated route in the app
 - [ ] contracts whose status is "future" have their status changed to "active"
   when a contract payment is made (should it error if the payment happens
   outside of the contract's date range?)
@@ -198,6 +198,8 @@ do this through stripe webhooks
 - [ ] a daily email is sent to me reporting any such activity that day (no email
   is sent if there is no activity)
 - [ ] email receipt to students successfully charged?
+- [ ] test webhook calls are viewable and don't muck things up (since they can
+  be made even when stripe is in "live" mode)
 *** DONE Site is not hideous
 **** DONE configure bootstrap
 https://github.com/twbs/bootstrap-sass
