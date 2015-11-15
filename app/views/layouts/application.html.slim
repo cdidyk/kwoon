@@ -9,9 +9,10 @@ html
     meta name="stripe-key" content=@stripe_key
 
   body
-    - if current_user
-      .logout
-        = button_to "Log out", :logout, method: :delete
-    div class="flash alert" = flash[:alert]
-    div class="flash notice" = flash[:notice]
-    = yield
+    .container
+      = render partial: "shared/navigation"
+      - if flash[:alert]
+        div class="alert alert-danger" role="alert" = flash[:alert]
+      - if flash[:notice]
+        div class="alert alert-success" role="alert" = flash[:notice]
+      = yield

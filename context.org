@@ -1,5 +1,5 @@
 * Kwoon App
-** [54%] Release 1
+** [63%] Release 1
 *** DONE App is Bootstrapped
 Rails 4 rspec pundit sorcery bootstrap postgresql
 Gemfile with lots of defaults for common things
@@ -197,9 +197,16 @@ do this through stripe webhooks
   notifications do I want?)
 - [ ] a daily email is sent to me reporting any such activity that day (no email
   is sent if there is no activity)
-*** TODO Site is not hideous
-**** TODO configure bootstrap
+*** DONE Site is not hideous
+**** DONE configure bootstrap
 https://github.com/twbs/bootstrap-sass
+**** [6/6] Acceptance Criteria
+***** DONE application layout is styled
+***** DONE applications/new is styled
+***** DONE info/index is styled
+***** DONE applications/confirmation and registrations/confirmation are styled
+***** DONE registrations/new is styled
+***** DONE sessions/new is styled
 *** TODO Copy is in place
 **** [0/4] Acceptance Criteria
 - [ ] Application Confirmation email
@@ -222,6 +229,11 @@ use for www.shaolinstpete.com, too.
 ***** TODO Document how to do for my linode and where everything is
 ***** TODO Check whether it works for both shaolinstpete.com and www.shaolinstpete.com
 ** Backlog
+*** Audit site for mobile
+*** Site design v2
+**** [0/2] Acceptance Criteria
+***** TODO SW logo in Kwoon header
+***** TODO ?
 *** Integration Tests for Registration
 *** App auto-sends renewal notice emails
 *** Admin can manage users

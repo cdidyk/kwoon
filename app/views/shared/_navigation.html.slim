@@ -1,0 +1,13 @@
+nav class="navbar navbar-default"
+  .container-fluid
+    .navbar-header
+      a href="#" class="navbar-brand" Shaolin Wahnam St Pete Kwoon
+    .collapse.navbar-collapse
+      ul.nav.navbar-nav
+        li
+          a href="http://shaolinstpete.com" Return to main site
+      - if current_user
+        .navbar-btn.navbar-right
+          = button_to "Log out", :logout, method: :delete
+        p.navbar-text.navbar-right  &nbsp;
+        p.navbar-text.navbar-right = "Hi, #{current_user.name}"

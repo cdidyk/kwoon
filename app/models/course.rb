@@ -6,7 +6,9 @@ class Course < ActiveRecord::Base
 
   validates :title, presence: true
 
+  DEFAULT_DATE_FORMAT = "%b %d, %Y"
+
   def display_dates
-    "#{start_date} to #{end_date}"
+    "#{start_date.strftime(DEFAULT_DATE_FORMAT)} to #{end_date.strftime(DEFAULT_DATE_FORMAT)}"
   end
 end

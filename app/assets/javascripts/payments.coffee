@@ -33,7 +33,7 @@ $(document).ready ->
           $errorMsg.text error.message
         else
           $errorMsg = $("<span class='help-block'>#{error.message}</span>")
-          $(":input.card_#{error.param}").after $errorMsg
+          $(":input.card_#{error.param}").before $errorMsg
         $submit.removeAttr 'disabled'
       else
         token = response.id

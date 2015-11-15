@@ -1,0 +1,8 @@
+$navbar-default-bg: darken(#b80508, 10%);
+$navbar-default-color: #ffd85c;
+$navbar-default-link-color: #ffd85c;
+$navbar-default-link-hover-color: darken(#ffd85c, 10%);
+
+@import "bootstrap-sprockets";
+@import "bootstrap";
+@import "bootstrap/theme";
