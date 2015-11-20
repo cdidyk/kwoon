@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 ruby '2.2.3'
 
+gem 'dotenv-rails'
 gem 'rails', '4.2.4'
 gem 'pg'
 gem 'postgres_ext'
@@ -29,11 +30,7 @@ gem 'validates_email_format_of', '~> 1.6.3'
 
 gem 'stripe', '~> 1.30.2'
 
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
-
 group :development, :test do
-  gem 'dotenv-rails'
   gem 'database_cleaner'
   gem 'factory_girl_rails'
   gem 'faker'
@@ -48,6 +45,10 @@ end
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'capistrano', '~> 3.4.0'
+  gem 'capistrano-bundler', '~>1.1.4'
+  gem 'capistrano-rails', '~> 1.1.5'
+  gem 'capistrano-rbenv', '~> 2.0.3'
   gem 'pry-rails'
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'

@@ -81,5 +81,5 @@ test:
 production:
   <<: *default
   database: kwoon_production
-  username: kwoon
+  username: <%= ENV['KWOON_DATABASE_USER'] %>
   password: <%= ENV['KWOON_DATABASE_PASSWORD'] %>
