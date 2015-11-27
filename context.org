@@ -1,5 +1,5 @@
 * Kwoon App
-** [63%] Release 1
+** [72%] Release 1
 *** DONE App is Bootstrapped
 Rails 4 rspec pundit sorcery bootstrap postgresql
 Gemfile with lots of defaults for common things
@@ -186,7 +186,7 @@ Stripe)
 Stripe will automatically handle subscription billing, but we need to track
 status of installment plans to determine when to cancel a subscription. We can
 do this through stripe webhooks
-**** [0/5] Acceptance Criteria
+**** [0/6] Acceptance Criteria
 - [ ] When a subscription payment is made, a stripe webhook is configured to
   send a notification to a designated route in the app
 - [ ] contracts whose status is "future" have their status changed to "active"
@@ -197,6 +197,7 @@ do this through stripe webhooks
   notifications do I want?)
 - [ ] a daily email is sent to me reporting any such activity that day (no email
   is sent if there is no activity)
+- [ ] email receipt to students successfully charged?
 *** DONE Site is not hideous
 **** DONE configure bootstrap
 https://github.com/twbs/bootstrap-sass
@@ -207,28 +208,36 @@ https://github.com/twbs/bootstrap-sass
 ***** DONE applications/confirmation and registrations/confirmation are styled
 ***** DONE registrations/new is styled
 ***** DONE sessions/new is styled
-*** TODO Copy is in place
-**** [0/4] Acceptance Criteria
-- [ ] Application Confirmation email
-- [ ] Registration Invite email
-- [ ] Course Registration page
-- [ ] ?
+*** DONE Copy is in place
+**** [3/3] Acceptance Criteria
+- [X] Application Confirmation email
+- [X] Registration Invite email
+- [X] Course Registration page
 *** TODO Audit Release
+**** [5/7] Issues Found
+***** DONE Obvious return to main site link in application confirmation body
+***** DONE Tab order for application form goes down instead of across
+***** DONE Error message at top of applications/new when there are validation errors
+***** TODO Links to student application from main site
+***** DONE Make kwoon.shaolinstpete.com default to /applications/new
+***** TODO Live stripe keys in production
+***** DONE Instructions on applications/new
 *** TODO Deploy to production
-**** TODO Cannibalize Capfile for course_registration app
-**** TODO Make sure log rotation is set up
+**** DONE Cannibalize Capfile for course_registration app
+**** DONE Make sure log rotation is set up
 **** TODO Make sure db backup is set up
 **** DONE Look into site-wide SSL certificate
 or at least transferring the current secure.shaolinstpete.com one
 ***** Result
 It looks like I have a current SSL for shaolinstpete.com which I may be able to
 use for www.shaolinstpete.com, too.
-**** [0/4] Set up SSL for shaolinstpete.com
-***** TODO Generate a CSR for shaolinstpete.com
-***** TODO Follow set up instructions
-***** TODO Document how to do for my linode and where everything is
-***** TODO Check whether it works for both shaolinstpete.com and www.shaolinstpete.com
+**** [3/3] Set up SSL for shaolinstpete.com
+***** DONE Generate a CSR for shaolinstpete.com
+***** DONE Follow set up instructions
+***** DONE Document how to do for my linode and where everything is
 ** Backlog
+*** Proper DB backups
+Use something like rsync.net for offsite backups
 *** Audit site for mobile
 *** Site design v2
 **** [0/2] Acceptance Criteria

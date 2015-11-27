@@ -5,6 +5,8 @@ h2 Course Registration
       h3 = @course.title
       h4 = @course.display_dates
 
+    p Only invited applicants can register for a course. Please check that the name and email listed below are yours, then fill out the form below to finalize your registration. If you have any problems registering, please <a href="http://shaolinstpete.com/contact-us/" target="blank">contact Sifu Chris Didyk directly</a>.
+
     = simple_form_for @registration, url: course_registrations_path(course_id: @course.id), html: { class: "new_registration payment_form"} do |f|
       = hidden_field_tag :reg_token, params[:reg_token]
       = f.input :user_id, as: :hidden, input_html: { value: "#{@user.id}" }
@@ -41,3 +43,13 @@ h2 Course Registration
             .col-md-4
               = cc_form.input :address_zip, label: "Zip code", input_html: { class: 'card_address_zip', name: nil }
       = f.button :submit, "Register"
+
+  .col-md-4
+    .well
+      h5 Payment Security
+      p Your payment information is safe here:
+      ul
+        li
+          p Your payment information is encrypted before being passed to our payment gateway
+        li
+          p We don't store your payment information directly (we let the experts at our payment gateway handle that), so in the unlikely event that this website is hacked, your payment information is still safe

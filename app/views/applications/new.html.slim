@@ -1,17 +1,25 @@
 h2 Student Application
 
+p We believe in teaching the Shaolin Arts to deserving students of any gender, race, culture, and religious beliefs (including atheist). However, we don't want to waste anyone's time (including ours), so we require prospective students to complete the following application. This way, we can help ensure that prospective students are well-suited for Shaolin Kung Fu training and that we can help them achieve their goals efficiently.
+
+p
+  strong We will never sell your information to any 3rd party
+
 .row
   .col-md-8
     = simple_form_for @application do |f|
       fieldset
         legend Contact Info
         .row
-          .col-md-6
-            = f.simple_fields_for :user do |uf|
+          = f.simple_fields_for :user do |uf|
+            .col-md-6
               = uf.input :name, label: 'Your name'
+            .col-md-6
               = uf.input :email
+        .row
           .col-md-6
             = f.input :phone, label: 'Phone number'
+          .col-md-6
             = f.input :address
 
       fieldset

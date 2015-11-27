@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   get 'info' => 'info#index'
 
-  root 'sessions#new'
+  root to: 'application#redirect_to_new_application'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

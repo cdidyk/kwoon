@@ -1,11 +1,11 @@
 nav class="navbar navbar-default"
   .container-fluid
     .navbar-header
-      a href="#" class="navbar-brand" Shaolin Wahnam St Pete Kwoon
+      = link_to 'Shaolin Wahnam St Pete Kwoon', root_url, class: 'navbar-brand'
     .collapse.navbar-collapse
       ul.nav.navbar-nav
         li
-          a href="http://shaolinstpete.com" Return to main site
+          a href="http://shaolinstpete.com" (return to shaolinstpete.com)
       - if current_user
         .navbar-btn.navbar-right
           = button_to "Log out", :logout, method: :delete

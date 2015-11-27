@@ -10,6 +10,7 @@ class ApplicationsController < ApplicationController
   def create
     @application = Application.create app_params
     if @application.new_record?
+      flash.now[:alert] = "There are some problems with your application that prevented its submission. Please review your application below and re-submit when you have fixed the problems."
       render action: 'new'
     else
       redirect_to application_confirmation_path
