@@ -214,11 +214,11 @@ https://github.com/twbs/bootstrap-sass
 - [X] Registration Invite email
 - [X] Course Registration page
 *** TODO Audit Release
-**** [5/7] Issues Found
+**** [6/7] Issues Found
 ***** DONE Obvious return to main site link in application confirmation body
 ***** DONE Tab order for application form goes down instead of across
 ***** DONE Error message at top of applications/new when there are validation errors
-***** TODO Links to student application from main site
+***** DONE Links to student application from main site
 ***** DONE Make kwoon.shaolinstpete.com default to /applications/new
 ***** TODO Live stripe keys in production
 ***** DONE Instructions on applications/new

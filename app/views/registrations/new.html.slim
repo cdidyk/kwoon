@@ -43,13 +43,3 @@ h2 Course Registration
             .col-md-4
               = cc_form.input :address_zip, label: "Zip code", input_html: { class: 'card_address_zip', name: nil }
       = f.button :submit, "Register"
-
-  .col-md-4
-    .well
-      h5 Payment Security
-      p Your payment information is safe here:
-      ul
-        li
-          p Your payment information is encrypted before being passed to our payment gateway
-        li
-          p We don't store your payment information directly (we let the experts at our payment gateway handle that), so in the unlikely event that this website is hacked, your payment information is still safe
