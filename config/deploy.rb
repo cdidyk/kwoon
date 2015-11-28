@@ -9,6 +9,7 @@ set :repo_url, 'git@github.com:cdidyk/kwoon.git'
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/srv/kwoon'
+set :puma_pid, '/srv/kwoon/shared/tmp/puma/pid'
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -29,7 +30,7 @@ set :linked_files, fetch(:linked_files, []).push('.env', '.ruby-version', 'confi
 
 # Default value for linked_dirs is []
 # set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
-set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/puma', 'tmp/pids', 'tmp/cache', 'tmp/sockets')
+set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/puma', 'tmp/cache')
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -39,12 +40,27 @@ set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/puma', 'tmp/pids', 't
 
 namespace :deploy do
 
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
+  # after :restart, :clear_cache do
+  #   on roles(:web), in: :groups, limit: 3, wait: 10 do
+  #     # Here we can do anything such as:
+  #     # within release_path do
+  #     #   execute :rake, 'cache:clear'
+  #     # end
+  #   end
+  # end
+
+  after :finished, :start_puma do
+    on roles(:web) do
+      restart = (
+        test "[ -f #{fetch(:puma_pid)} ]" and
+        test :kill, "-0 $( cat #{fetch(:puma_pid)} )"
+      )
+
+      if restart
+        execute :service, "puma restart"
+      else
+        execute :service, "puma start"
+      end
     end
   end
 
