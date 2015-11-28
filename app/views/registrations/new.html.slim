@@ -26,6 +26,11 @@ h2 Course Registration
             = " Payment plan"
           span class="help-block" = @custom_validations[:payment_plan]
           = select_tag :payment_plan, options_for_select(@payment_options), prompt: 'Select a payment plan', class: "select required payment_plan form-control"
+
+        p.well.payment_desc.monthly style="display: none;" Your card will be charged <strong>$250</strong> now and <strong>$250</strong> at the start of the 2nd, 3rd, and 4th months of the course (<strong>$1000</strong> total).
+
+        p.well.payment_desc.full style="display: none;" Your card will be charged <strong>$900</strong> now with no additional payments during the course.
+
         = simple_fields_for :card do |cc_form|
           .row
             .col-md-8
@@ -43,3 +48,5 @@ h2 Course Registration
             .col-md-4
               = cc_form.input :address_zip, label: "Zip code", input_html: { class: 'card_address_zip', name: nil }
       = f.button :submit, "Register"
+
+hr

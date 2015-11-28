@@ -41,3 +41,12 @@ $(document).ready ->
         $('.payment_form').append("<input type='hidden' name='stripe_token' value='#{token}' />")
         $('.payment_form').get(0).submit()
     )
+
+  $('.payment_form select.payment_plan').change ->
+    $selectedPlan = $('.payment_form select.payment_plan option:selected')
+    $('.payment_desc').hide()
+
+    if $selectedPlan.text().match /monthly/i
+      $('.payment_desc.monthly').show()
+    else if $selectedPlan.text().match /full/i
+      $('.payment_desc.full').show()
