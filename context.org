@@ -1,5 +1,5 @@
 * Kwoon App
-** [72%] Release 1
+** [66%] Release 1
 *** DONE App is Bootstrapped
 Rails 4 rspec pundit sorcery bootstrap postgresql
 Gemfile with lots of defaults for common things
@@ -214,14 +214,16 @@ https://github.com/twbs/bootstrap-sass
 - [X] Registration Invite email
 - [X] Course Registration page
 *** TODO Audit Release
-**** [6/7] Issues Found
+**** [7/9] Issues Found
 ***** DONE Obvious return to main site link in application confirmation body
 ***** DONE Tab order for application form goes down instead of across
 ***** DONE Error message at top of applications/new when there are validation errors
 ***** DONE Links to student application from main site
 ***** DONE Make kwoon.shaolinstpete.com default to /applications/new
-***** TODO Live stripe keys in production
+***** DONE Live stripe keys in production
 ***** DONE Instructions on applications/new
+***** TODO Validation error styles on registrations/new match those on applications/new
+***** TODO Error message at the top of registrations/new when there are validation errors
 *** TODO Deploy to production
 **** DONE Cannibalize Capfile for course_registration app
 **** DONE Make sure log rotation is set up
@@ -235,6 +237,11 @@ use for www.shaolinstpete.com, too.
 ***** DONE Generate a CSR for shaolinstpete.com
 ***** DONE Follow set up instructions
 ***** DONE Document how to do for my linode and where everything is
+*** TODO Invite existing approved applicants
+**** [2/3] Acceptance Criteria
+***** TODO Users created/applications imported
+***** DONE Course set up
+***** DONE Course contract plans set up
 ** Backlog
 *** Proper DB backups
 Use something like rsync.net for offsite backups
