@@ -31,6 +31,7 @@ class RegistrationsController < ApplicationController
     payment_plan = @course.contract_plans.where(id: params[:payment_plan]).first
     if payment_plan.blank?
       @custom_validations[:payment_plan] = "must be selected"
+      flash.now[:alert] = "There are some problems with your registration that prevented its submission. Please review the form below and re-submit when you have fixed the problems."
       render :new
       return
     end

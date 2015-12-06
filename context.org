@@ -1,5 +1,5 @@
 * Kwoon App
-** [66%] Release 1
+** [83%] Release 1
 *** DONE App is Bootstrapped
 Rails 4 rspec pundit sorcery bootstrap postgresql
 Gemfile with lots of defaults for common things
@@ -213,8 +213,8 @@ https://github.com/twbs/bootstrap-sass
 - [X] Application Confirmation email
 - [X] Registration Invite email
 - [X] Course Registration page
-*** TODO Audit Release
-**** [7/9] Issues Found
+*** DONE Audit Release
+**** [9/9] Issues Found
 ***** DONE Obvious return to main site link in application confirmation body
 ***** DONE Tab order for application form goes down instead of across
 ***** DONE Error message at top of applications/new when there are validation errors
@@ -222,8 +222,8 @@ https://github.com/twbs/bootstrap-sass
 ***** DONE Make kwoon.shaolinstpete.com default to /applications/new
 ***** DONE Live stripe keys in production
 ***** DONE Instructions on applications/new
-***** TODO Validation error styles on registrations/new match those on applications/new
-***** TODO Error message at the top of registrations/new when there are validation errors
+***** DONE Validation error styles on registrations/new match those on applications/new
+***** DONE Error message at the top of registrations/new when there are validation errors
 *** TODO Deploy to production
 **** DONE Cannibalize Capfile for course_registration app
 **** DONE Make sure log rotation is set up
@@ -237,14 +237,24 @@ use for www.shaolinstpete.com, too.
 ***** DONE Generate a CSR for shaolinstpete.com
 ***** DONE Follow set up instructions
 ***** DONE Document how to do for my linode and where everything is
-*** TODO Invite existing approved applicants
-**** [2/3] Acceptance Criteria
-***** TODO Users created/applications imported
+*** DONE Invite existing approved applicants
+**** [3/3] Acceptance Criteria
+***** DONE Users created/applications imported
 ***** DONE Course set up
 ***** DONE Course contract plans set up
 ** Backlog
 *** Proper DB backups
 Use something like rsync.net for offsite backups
+*** Audit flow: reading an ad thru registration
+*** Multi-threaded
+Puma is best when serving a multi-threaded app. A multi-threaded app takes up
+less memory and generally runs more efficiently than a multi-process one, but
+while rails is thread safe, there is still a bit to do to switch to
+multi-threaded. MRI isn't truly multi-threaded, so we will need to investigate
+moving to rubinius (I don't want to run on a java stack, so JRuby is out). We
+also need to investigate exactly how to set the app up for multi-threaded
+concurrency, how to check that it's working correctly, and auditing the app to
+ensure there are not thread unsafe happenings that will cause problems.
 *** Audit site for mobile
 *** Site design v2
 **** [0/2] Acceptance Criteria

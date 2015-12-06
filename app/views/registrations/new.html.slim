@@ -20,7 +20,7 @@ h2 Course Registration
               = uf.input :email, input_html: {value: @user.email, disabled: true}
       fieldset
         legend Payment Info
-        .form-group.select.required.payment_plan
+        .form-group.select.required.payment_plan class="#{@custom_validations[:payment_plan] ? 'has-error' : ''}"
           label.select.required.control-label for="payment_plan"
             abbr title="required" *
             = " Payment plan"

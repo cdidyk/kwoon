@@ -5,8 +5,10 @@ $(document).ready ->
     event.preventDefault()
 
     # clear form messages
+    $(".alert").remove()
     $(".flash").remove()
     $(".help-block").remove()
+    $(".has-error").removeClass('has-error')
 
     $cardFields = {
       number: $('.payment_form input.card_number')
@@ -28,16 +30,13 @@ $(document).ready ->
       address_zip: $cardFields.address_zip.val()
     }, (status, response) ->
       if error = response.error
-        $errorMsg = $(":input.card_#{error.param} ~ .help-block")
-        if not _.isEmpty $errorMsg
-          $errorMsg.text error.message
-        else
-          $errorMsg = $("<span class='help-block'>#{error.message}</span>")
-          $(":input.card_#{error.param}").before $errorMsg
+        $("nav").after $("<div class='alert alert-danger' role='alert'>There are some problems with your registration that prevented its submission. Please review the form below and re-submit when you have fixed the problems.</div>")
+        $(":input.card_#{error.param}").parent("div").addClass("has-error")
+        $errorMsg = $("<span class='help-block'>#{error.message}</span>")
+        $(":input.card_#{error.param}").before $errorMsg
         $submit.removeAttr 'disabled'
       else
         token = response.id
-        # $('.token_error').hide()
         $('.payment_form').append("<input type='hidden' name='stripe_token' value='#{token}' />")
         $('.payment_form').get(0).submit()
     )
