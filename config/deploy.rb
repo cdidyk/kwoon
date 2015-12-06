@@ -38,6 +38,9 @@ set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/puma', 'tmp/cache')
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
+# only keep the last 2 sets of cached assets
+set :keep_assets, 2
+
 namespace :deploy do
 
   # after :restart, :clear_cache do
