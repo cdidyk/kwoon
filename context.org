@@ -245,6 +245,11 @@ use for www.shaolinstpete.com, too.
 ** Backlog
 *** Proper DB backups
 Use something like rsync.net for offsite backups
+*** Cleanup old assets on deploy
+tmp/cache/assets/production/sprockets/v3.0 gets littered with old asset files
+that aren't cleaned up. Additionally, it's possible that current/public/assets/
+keeps more versions of the application js file than it should. Maybe there are
+more issues lurking, too.
 *** Audit flow: reading an ad thru registration
 *** Multi-threaded
 Puma is best when serving a multi-threaded app. A multi-threaded app takes up

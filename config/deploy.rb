@@ -40,6 +40,7 @@ set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/puma', 'tmp/cache')
 
 # only keep the last 2 sets of cached assets
 set :keep_assets, 2
+set :assets_roles, [:web, :app]
 
 namespace :deploy do
 
