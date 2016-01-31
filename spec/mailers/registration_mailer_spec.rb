@@ -31,4 +31,26 @@ RSpec.describe RegistrationMailer, type: :mailer do
       expect(email.body).to match(/#{reg_token}/)
     end
   end
+
+  describe ".new_registration" do
+    it "generates an email to the sifu describing the new registration" do
+      user = build :user
+      course = build :course
+      contract = build :contract, user: user
+
+      expect(user.contracts).
+        to receive(:order).
+            with("created_at DESC").
+            and_return [contract]
+
+      email = RegistrationMailer.
+        new_registration(user, course).
+        deliver_now
+
+      expect(email.from).to eq(["no-reply@shaolinstpete.com"])
+      expect(email.to).to eq([ENV['SIFU_EMAIL']])
+      expect(email.subject).to match(/New Registration/i)
+      expect(email.body.to_s).to match(/received.*registration/)
+    end
+  end
 end

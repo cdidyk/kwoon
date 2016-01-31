@@ -125,6 +125,10 @@ RSpec.describe RegistrationsController, type: :controller do
       allow(RegistrationMailer).
         to receive(:confirmation).
             and_return mail_double
+
+      allow(RegistrationMailer).
+        to receive(:new_registration).
+            and_return mail_double
     end
 
     context "when the registration is successful" do
@@ -142,6 +146,25 @@ RSpec.describe RegistrationsController, type: :controller do
 
         expect(RegistrationMailer).
           to receive(:confirmation).
+              with(user, course).
+              and_return mail_double
+
+        post :create, params
+      end
+
+      it "sends the sifu a new registration email" do
+        allow(User).
+          to receive(:find).
+              with(user.id).
+              and_return user
+
+        allow(Course).
+          to receive(:find).
+              with(course.id).
+              and_return course
+
+        expect(RegistrationMailer).
+          to receive(:new_registration).
               with(user, course).
               and_return mail_double
 

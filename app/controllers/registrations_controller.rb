@@ -52,6 +52,10 @@ class RegistrationsController < ApplicationController
       RegistrationMailer.
         confirmation(@user, @course).
         deliver_later
+
+      RegistrationMailer.
+        new_registration(@user, @course).
+        deliver_later
     else
       flash.now[:alert] = result.message
       render :new

@@ -17,4 +17,14 @@ class RegistrationMailer < ApplicationMailer
     mail to: user.email,
          subject: "Shaolin Wahnam St Pete - Register for #{@course.title}"
   end
+
+  def new_registration user, course
+    @user = user
+    @contract = @user.contracts.order("created_at DESC").first
+    @course = course
+    @course_registrations = course.registrations.count
+
+    mail to: ENV['SIFU_EMAIL'],
+         subject: "Shaolin Wahnam St Pete - New Registration by #{@user.name}"
+  end
 end

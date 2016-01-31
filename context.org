@@ -186,7 +186,7 @@ Stripe)
 Stripe will automatically handle subscription billing, but we need to track
 status of installment plans to determine when to cancel a subscription. We can
 do this through stripe webhooks
-**** [0/7] Acceptance Criteria
+**** [0/9] Acceptance Criteria
 - [ ] When a subscription payment is made (invoice.paid event), a stripe webhook
   is configured to send a notification to a designated route in the app
 - [ ] contracts whose status is "future" have their status changed to "active"
@@ -200,6 +200,8 @@ do this through stripe webhooks
 - [ ] email receipt to students successfully charged?
 - [ ] test webhook calls are viewable and don't muck things up (since they can
   be made even when stripe is in "live" mode)
+- [ ] don't trust callbacks on their own. Instead, use an incoming callback's id to query Stripe for the event object and work with it instead.
+- [ ] webhook calls are idempotent, meaning that the same call made multiple times yields the same result (e.g. duplicate callbacks don't both update the contract's balance). To achieve this, capture each callback in the db (just enough info to identify it). When a callback comes in, see if it's already in the db and only act on it if it isn't.
 *** DONE Site is not hideous
 **** DONE configure bootstrap
 https://github.com/twbs/bootstrap-sass
@@ -247,7 +249,9 @@ use for www.shaolinstpete.com, too.
 ** Backlog
 *** Proper DB backups
 Use something like rsync.net for offsite backups
-*** Cleanup old assets on deploy
+*** Clean up stripe callback events db table periodically (and automatically)
+For every incoming webhook callback, we identify it and fetch it from the Stripe API and then save the identifying info in the db in case the same callback comes in multiple times. Periodically, we should clean out this table. Currently, I'm thinking a background job scheduled as a cron job should do the trick nicely. We could save the last 6-12 months of callbacks maybe to start.
+*** Clean up old assets on deploy
 tmp/cache/assets/production/sprockets/v3.0 gets littered with old asset files
 that aren't cleaned up. Additionally, it's possible that current/public/assets/
 keeps more versions of the application js file than it should. Maybe there are
@@ -280,6 +284,8 @@ Some grouping ideas:
 - current course-enrolled students
 *** Student can renew a contract
 should be able to use existing or new payment info to renew or register for a course
+*** Emails are sent via background jobs
+Currently, emails are sent synchronously, which means that the page waits for the mailer before continuing on doing its thing. Since we need background jobs already for cleaning out the stripe callback table, we might as well set up the mailers to work via background jobs, too.
 *** Specific instances of courses can be tracked as part of overall courses
 In other words, the app recognizes that someone taking the Level 1 course in Jan
 2016 and someone who took the Level 1 course in Jan 2017 both took the Level 1
