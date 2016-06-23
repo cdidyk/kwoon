@@ -7,7 +7,7 @@ class RegistrationsController < ApplicationController
     @user = User.find @decoded_token[:user_id]
     @course = Course.find @decoded_token[:course_id]
     @registration = Registration.new course: @course, user: @user
-    @payment_options = @course.contract_plans.all.map(&:to_select_option)
+    @contract_plans = @course.contract_plans.all.to_a
     @custom_validations = {}
     @month_options = month_options
     @year_options = year_options
@@ -17,7 +17,7 @@ class RegistrationsController < ApplicationController
     @user = User.where(id: @decoded_token[:user_id]).first
     @course = Course.where(id: @decoded_token[:course_id]).first
     @registration = Registration.new course: @course, user: @user
-    @payment_options = @course.contract_plans.all.map(&:to_select_option)
+    @contract_plans = @course.contract_plans.all.to_a
     @custom_validations = {}
     @month_options = month_options
     @year_options = year_options
@@ -28,6 +28,7 @@ class RegistrationsController < ApplicationController
       return
     end
 
+    # REVIEW: use @contract_plans instead of query?
     payment_plan = @course.contract_plans.where(id: params[:payment_plan]).first
     if payment_plan.blank?
       @custom_validations[:payment_plan] = "must be selected"

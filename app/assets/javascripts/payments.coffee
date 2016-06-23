@@ -41,11 +41,37 @@ $(document).ready ->
         $('.payment_form').get(0).submit()
     )
 
+  displayAmount = (amount) -> "$#{amount/100}"
+
+  monthlyDesc = (selectedPlan) ->
+    if _.isEmpty(selectedPlan)
+      return ''
+
+    if selectedPlan.deposit? && selectedPlan.deposit > 0
+      "Your card will be charged <strong>#{displayAmount(selectedPlan.deposit)}</strong> now and <strong>#{displayAmount(selectedPlan.payment_amount)}</strong> each month of the course, starting with the second month (<strong>#{displayAmount(selectedPlan.total)}</strong> total)."
+    else
+      "Your card will <strong>not</strong> be charged now, but will be charged <strong>#{displayAmount(selectedPlan.payment_amount)}</strong> on the first day of the course and each month after (<strong>#{displayAmount(selectedPlan.total)} total)."
+
+  inFullDesc = (selectedPlan) ->
+    if _.isEmpty(selectedPlan)
+      return ''
+
+    "Your card will be charged <strong>#{displayAmount(selectedPlan.total)}</strong> now with no additional payments during the course."
+
+  planOptions = ->
+    $('.payment_desc').data('contractPlans').map (cp) -> JSON.parse(cp)
+
   $('.payment_form select.payment_plan').change ->
     $selectedPlan = $('.payment_form select.payment_plan option:selected')
-    $('.payment_desc').hide()
+    selectedPlan = _.find planOptions(), (po) -> po.id == Number($selectedPlan.val())
+
+    $('.payment_desc').hide().html ''
 
     if $selectedPlan.text().match /monthly/i
-      $('.payment_desc.monthly').show()
+      $('.payment_desc').html monthlyDesc(selectedPlan)
+      $('.payment_desc').show()
     else if $selectedPlan.text().match /full/i
-      $('.payment_desc.full').show()
+      $('.payment_desc').html inFullDesc(selectedPlan)
+      $('.payment_desc').show()
+    else
+      # don't show

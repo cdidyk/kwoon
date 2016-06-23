@@ -282,6 +282,7 @@ Some grouping ideas:
 - current ongoing students
 - inactive students
 - current course-enrolled students
+*** Auto-renewable contracts
 *** Student can renew a contract
 should be able to use existing or new payment info to renew or register for a course
 *** Emails are sent via background jobs
