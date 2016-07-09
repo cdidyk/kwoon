@@ -284,7 +284,7 @@ Some grouping ideas:
 - current course-enrolled students
 *** Auto-renewable contracts
 *** Student can renew a contract
-should be able to use existing or new payment info to renew or register for a course
+should be able to use existing or new payment info to renew or register for a course. I just verified that if a customer supplies a credit card that is already associated with them as a payment source, a duplicate payment source is created.
 *** Emails are sent via background jobs
 Currently, emails are sent synchronously, which means that the page waits for the mailer before continuing on doing its thing. Since we need background jobs already for cleaning out the stripe callback table, we might as well set up the mailers to work via background jobs, too.
 *** Specific instances of courses can be tracked as part of overall courses

@@ -196,9 +196,7 @@ RSpec.describe RegistrationContext, type: :context do
             to receive(:process_deposit).
                 and_return({
                              payment_succeeded: false,
-                             customer: double("Customer"),
-                             card: double("Card"),
-                             charge: double("Charge", status: 'failed')
+                             message: RegistrationContext::MESSAGES[:card_declined]
                            })
         end
 
@@ -206,6 +204,7 @@ RSpec.describe RegistrationContext, type: :context do
           result = context.call
           expect(result).to_not be_successful
           expect(result.payment_succeeded).to be false
+          expect(result.message).to eq(RegistrationContext::MESSAGES[:card_declined])
         end
 
         it "doesn't save the registration or contract" do
@@ -239,6 +238,7 @@ RSpec.describe RegistrationContext, type: :context do
         result = context.call
         expect(result).to_not be_successful
         expect(result.valid).to be false
+        expect(result.validation_errors).to eq(tomato: "can't be tomahto")
       end
 
       it "doesn't process the deposit" do

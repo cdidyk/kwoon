@@ -47,6 +47,8 @@ class RegistrationContext
   end
 
 
+  #TODO: these procedural calls should probably just take the result obj as a
+  # param and modify it
   def call
     result = Result.new
 
@@ -57,6 +59,7 @@ class RegistrationContext
 
     charge_result = process_deposit
     result.payment_succeeded = charge_result[:payment_succeeded]
+    result.message = charge_result[:message] if charge_result[:message]
     return result unless result.payment_succeeded
 
     result.saved = save_targets
@@ -77,6 +80,7 @@ class RegistrationContext
     { valid: valid, error_messages: error_messages }
   end
 
+  #REVIEW: look to break this up and ensure a consistent object is returned
   def process_deposit
     customer = nil
     if @user.stripe_id
