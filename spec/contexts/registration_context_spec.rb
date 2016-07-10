@@ -661,6 +661,16 @@ RSpec.describe RegistrationContext, type: :context do
         to receive(:update_attribute)
     end
 
+    context "when the course has no first installment date" do
+      it "returns true without creating a subscription or updating the contract" do
+        context.course.first_installment_date = nil
+
+        expect(customer.subscriptions).to_not receive(:create)
+        expect(context.contract).to_not receive(:update_attribute)
+        expect(context.subscribe_to_plan customer).to be true
+      end
+    end
+
     context "when the contract is already paid off" do
       it "returns true without creating a subscription or updating the contract" do
         context.contract.balance = 0

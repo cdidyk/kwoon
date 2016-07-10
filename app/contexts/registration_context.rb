@@ -202,10 +202,7 @@ class RegistrationContext
 
 
   def subscribe_to_plan customer
-    return true if @contract.paid_off?
-
-    #TODO: double check that the course's first_installment_date is set and
-    # catch separately if it isn't
+    return true if @contract.paid_off? or @course.first_installment_date.blank?
 
     begin
       subscription = customer.subscriptions.create(
