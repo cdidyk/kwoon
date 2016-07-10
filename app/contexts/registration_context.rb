@@ -70,6 +70,7 @@ class RegistrationContext
     result
   end
 
+
   def validate_targets
     valid = target_actors.map(&:valid?).all?
     error_messages = target_actors.inject({}) do |out, actor|
@@ -79,6 +80,7 @@ class RegistrationContext
 
     { valid: valid, error_messages: error_messages }
   end
+
 
   #REVIEW: look to break this up and ensure a consistent object is returned
   def process_deposit
@@ -110,7 +112,7 @@ class RegistrationContext
         }
       end
 
-      #TODO log but continue if update fails
+      #TODO: log but continue if update fails
       @user.update stripe_id: customer.id
     end
 
@@ -132,6 +134,23 @@ class RegistrationContext
       }
     end
 
+    # Don't charge if there's no deposit to charge
+    if @payment_plan.deposit.blank? or @payment_plan.deposit <= 1
+      #REVIEW: consider renaming payment_succeeded. It's a little weird for it
+      # to be true here when there is no payment attempted, but it's used to
+      # represent the success of #process_deposit.
+      #
+      # Maybe rethink the charge result object, too, and at least have it return
+      # something consistently-structured.
+      return {
+        payment_succeeded: true,
+        customer: customer,
+        card: card,
+        charge: nil
+      }
+    end
+
+    # Charge deposit
     desc =
       if @payment_plan.payment_amount > 0
         "#{@course.title} Deposit $#{@payment_plan.deposit/100}"
@@ -169,6 +188,7 @@ class RegistrationContext
     {payment_succeeded: charge && charge.status == 'succeeded'}
   end
 
+
   def save_targets
     all_saved = false
 
@@ -180,8 +200,12 @@ class RegistrationContext
     all_saved
   end
 
+
   def subscribe_to_plan customer
     return true if @contract.paid_off?
+
+    #TODO: double check that the course's first_installment_date is set and
+    # catch separately if it isn't
 
     begin
       subscription = customer.subscriptions.create(
@@ -203,11 +227,13 @@ class RegistrationContext
   end
 
 
+
   private
 
   def class_to_sym obj
     obj.class.to_s.underscore.to_sym
   end
+
 
   class Result
     attr_accessor :valid, :validation_errors, :payment_succeeded,

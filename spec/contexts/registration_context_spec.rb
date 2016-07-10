@@ -8,15 +8,23 @@ RSpec.describe RegistrationContext, type: :context do
   let(:payment_plan) { build :contract_plan, total: 100000 }
   let(:registration) { build :registration, user: user, course: course }
   let(:stripe_token) { 'stripe token value' }
-  let(:context) {
-    RegistrationContext.new(
+
+  def build_context attrs={}
+    defaults = {
       user: user,
       course: course,
       registration: registration,
       payment_plan: payment_plan,
       stripe_token: stripe_token
+    }
+
+    RegistrationContext.new(
+      defaults.merge attrs
     )
-  }
+  end
+
+  let(:context) { build_context }
+
 
   describe "#initialize" do
     it "requires a user" do
@@ -356,29 +364,52 @@ RSpec.describe RegistrationContext, type: :context do
         context.process_deposit
       end
 
-      it "creates a Stripe Charge using the Stripe Customer, Stripe Card, and payment plan" do
-        expect(Stripe::Charge).
-          to receive(:create).
-              with(
-                amount: payment_plan.deposit,
-                currency: 'usd',
-                customer: customer.id,
-                source: card.id,
-                description: anything
-              )
+      context "when the course requires a deposit" do
+        it "creates a Stripe Charge using the Stripe Customer, Stripe Card, and payment plan" do
+          expect(Stripe::Charge).
+            to receive(:create).
+                with(
+                  amount: payment_plan.deposit,
+                  currency: 'usd',
+                  customer: customer.id,
+                  source: card.id,
+                  description: anything
+                )
 
-        context.process_deposit
+          context.process_deposit
+        end
+
+        it "records the successful charge on the contract" do
+          starting_balance = context.contract.balance
+          context.process_deposit
+          expect(context.contract.balance).to eq(starting_balance - charge.amount)
+        end
+
+        it "returns the customer, card, and charge" do
+          expect(context.process_deposit).
+            to eq(payment_succeeded: true, customer: customer, card: card, charge: charge)
+        end
       end
 
-      it "records the successful charge on the contract" do
-        starting_balance = context.contract.balance
-        context.process_deposit
-        expect(context.contract.balance).to eq(starting_balance - charge.amount)
-      end
+      context "when the course doesn't require a deposit" do
+        let(:no_dep_payment_plan) { build :contract_plan, total: 100000, deposit: 0 }
+        let(:context) { build_context payment_plan: no_dep_payment_plan }
 
-      it "returns the customer, card, and charge" do
-        expect(context.process_deposit).
-          to eq(payment_succeeded: true, customer: customer, card: card, charge: charge)
+        it "doesn't create a Stripe Charge" do
+          expect(Stripe::Charge).not_to receive(:create)
+          context.process_deposit
+        end
+
+        it "doesn't alter the contract" do
+          starting_balance = context.contract.balance
+          context.process_deposit
+          expect(context.contract.balance).to eq(starting_balance)
+        end
+
+        it "returns the customer, card, and a nil charge" do
+          expect(context.process_deposit).
+            to eq(payment_succeeded: true, customer: customer, card: card, charge: nil)
+        end
       end
     end
 
