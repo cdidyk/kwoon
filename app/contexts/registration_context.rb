@@ -205,6 +205,9 @@ class RegistrationContext
     return true if @contract.paid_off? or @course.first_installment_date.blank?
 
     begin
+      #TODO: either use the same source as in #process_deposit explicitly here
+      # or update the customer with the new source (which makes it the customer's
+      # default one)
       subscription = customer.subscriptions.create(
         plan: @payment_plan.stripe_id,
         metadata: {

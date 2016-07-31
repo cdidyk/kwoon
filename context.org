@@ -1,5 +1,5 @@
 * Kwoon App
-** [83%] Release 1
+** [100%] Release 1
 *** DONE App is Bootstrapped
 Rails 4 rspec pundit sorcery bootstrap postgresql
 Gemfile with lots of defaults for common things
@@ -182,26 +182,6 @@ Stripe)
 - [X] exp month is a dropdown of months (with numeric values)
 - [X] exp year is a dropdown with options ranging from the current year to 10
   years ahead
-*** TODO App updates contracts on stripe charges
-Stripe will automatically handle subscription billing, but we need to track
-status of installment plans to determine when to cancel a subscription. We can
-do this through stripe webhooks
-**** [0/9] Acceptance Criteria
-- [ ] When a subscription payment is made (invoice.paid event), a stripe webhook
-  is configured to send a notification to a designated route in the app
-- [ ] contracts whose status is "future" have their status changed to "active"
-  when a contract payment is made (should it error if the payment happens
-  outside of the contract's date range?)
-- [ ] the payment amount is subtracted from the contract's balance
-- [ ] if the contract is paid off, the subscription is canceled (what
-  notifications do I want?)
-- [ ] a daily email is sent to me reporting any such activity that day (no email
-  is sent if there is no activity)
-- [ ] email receipt to students successfully charged?
-- [ ] test webhook calls are viewable and don't muck things up (since they can
-  be made even when stripe is in "live" mode)
-- [ ] don't trust callbacks on their own. Instead, use an incoming callback's id to query Stripe for the event object and work with it instead.
-- [ ] webhook calls are idempotent, meaning that the same call made multiple times yields the same result (e.g. duplicate callbacks don't both update the contract's balance). To achieve this, capture each callback in the db (just enough info to identify it). When a callback comes in, see if it's already in the db and only act on it if it isn't.
 *** DONE Site is not hideous
 **** DONE configure bootstrap
 https://github.com/twbs/bootstrap-sass
@@ -228,10 +208,9 @@ https://github.com/twbs/bootstrap-sass
 ***** DONE Instructions on applications/new
 ***** DONE Validation error styles on registrations/new match those on applications/new
 ***** DONE Error message at the top of registrations/new when there are validation errors
-*** TODO Deploy to production
+*** DONE Deploy to production
 **** DONE Cannibalize Capfile for course_registration app
 **** DONE Make sure log rotation is set up
-**** TODO Make sure db backup is set up
 **** DONE Look into site-wide SSL certificate
 or at least transferring the current secure.shaolinstpete.com one
 ***** Result
@@ -246,8 +225,75 @@ use for www.shaolinstpete.com, too.
 ***** DONE Users created/applications imported
 ***** DONE Course set up
 ***** DONE Course contract plans set up
+** [0%] Release 2
+*** TODO Admin can set up Events
+An Event is a camp/workshop/seminar/retreat. Something that runs in a location for a certain date range and has one or more courses. Registration works differently than for individual courses. There are no contracts and no contract plans (only pay-in-full). Simple discounts can be set up for an event and users don't have to submit an application first.
+
+For this story, setting up events through a UI is not required. Being able to set them up via rails console is acceptable. We want to minimize UI until we have enough of a reason to implement a proper frontend with React and friends.
+**** [0/9] Acceptance Criteria
+- [ ] Event model exists with the following fields:
+  - title
+  - description
+  - location
+  - start date
+  - end date
+  - has many Courses
+  - has many Event Discounts
+- [ ] Event Discount model exists with the following fields:
+  - event Id
+  - description
+  - course Ids (array or comma-delimited)
+  - price (in cents)
+- [ ] Courses can now optionally belong to an Event
+- [ ] Course start/end dates must be within Event's start/end dates
+- [ ] Either Courses should have an optional base price or there should be an event_courses table that has a price (leaning towards former)
+- [ ] Events are expected to have a corresponding view in app/views/events/<id>-<title>
+- [ ] Event page has a list of event courses (chronological by-end-date) with checkboxes and prices
+- [ ] Checking and unchecking courses changes the total displayed, taking any discounts into account
+- [ ] Once Festival event is created, selecting Crossroads course also selects One Finger Shooting Zen
+*** TODO Users can register for Events
+**** [0/14] Acceptance Criteria
+- [ ] Event Registration model exists with the following fields:
+  - event id
+  - user id
+  - amount paid
+  - stripe id (for payment)
+- [ ] Registering for an event creates an Event Registration
+- [ ] Registering for an event creates Course Registrations for each course the user registered for
+- [ ] The current Registration model (and table) should become CourseRegistration
+- [ ] The event page has a user and CC info section with a "Register" button
+- [ ] User model has a from/location column (optional) for capturing city/state (if USA) or city/country (if not USA)
+- [ ] Registrations for an email not already in the system create a new user and new stripe customer
+- [ ] Registrations for an email already in the system use the existing user/stripe customer
+- [ ] The CC used should become the stripe customer's default source
+- [ ] Event registrations are one-time payments (pay-in-full) only
+- [ ] Event registration payments should attach the event name + registered course titles to the stripe payment for easy lookup later
+- [ ] At least one course must be chosen
+- [ ] Validation works like course registration
+*** TODO Emails are sent using a transactional email service
+** [0%] Release 3
+*** TODO App updates contracts on stripe charges
+Stripe will automatically handle subscription billing, but we need to track
+status of installment plans to determine when to cancel a subscription. We can
+do this through stripe webhooks
+**** [0/9] Acceptance Criteria
+- [ ] When a subscription payment is made (invoice.paid event), a stripe webhook
+  is configured to send a notification to a designated route in the app
+- [ ] contracts whose status is "future" have their status changed to "active"
+  when a contract payment is made (should it error if the payment happens
+  outside of the contract's date range?)
+- [ ] the payment amount is subtracted from the contract's balance
+- [ ] if the contract is paid off, the subscription is canceled (what
+  notifications do I want?)
+- [ ] a daily email is sent to me reporting any such activity that day (no email
+  is sent if there is no activity)
+- [ ] email receipt to students successfully charged?
+- [ ] test webhook calls are viewable and don't muck things up (since they can
+  be made even when stripe is in "live" mode)
+- [ ] don't trust callbacks on their own. Instead, use an incoming callback's id to query Stripe for the event object and work with it instead.
+- [ ] webhook calls are idempotent, meaning that the same call made multiple times yields the same result (e.g. duplicate callbacks don't both update the contract's balance). To achieve this, capture each callback in the db (just enough info to identify it). When a callback comes in, see if it's already in the db and only act on it if it isn't.
 ** Backlog
-*** Proper DB backups
+*** DB backups
 Use something like rsync.net for offsite backups
 *** Clean up stripe callback events db table periodically (and automatically)
 For every incoming webhook callback, we identify it and fetch it from the Stripe API and then save the identifying info in the db in case the same callback comes in multiple times. Periodically, we should clean out this table. Currently, I'm thinking a background job scheduled as a cron job should do the trick nicely. We could save the last 6-12 months of callbacks maybe to start.
@@ -266,7 +312,6 @@ moving to rubinius (I don't want to run on a java stack, so JRuby is out). We
 also need to investigate exactly how to set the app up for multi-threaded
 concurrency, how to check that it's working correctly, and auditing the app to
 ensure there are not thread unsafe happenings that will cause problems.
-*** Audit site for mobile
 *** Site design v2
 **** [0/2] Acceptance Criteria
 ***** TODO SW logo in Kwoon header
