@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151103160324) do
+ActiveRecord::Schema.define(version: 20160802135953) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,6 +78,40 @@ ActiveRecord::Schema.define(version: 20151103160324) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.datetime "first_installment_date"
+    t.integer  "base_price"
+    t.integer  "event_id"
+    t.string   "schedule_desc"
+  end
+
+  add_index "courses", ["event_id"], name: "index_courses_on_event_id", using: :btree
+
+  create_table "event_discounts", force: :cascade do |t|
+    t.integer "event_id"
+    t.string  "description"
+    t.string  "course_list"
+    t.integer "price"
+  end
+
+  add_index "event_discounts", ["event_id"], name: "index_event_discounts_on_event_id", using: :btree
+
+  create_table "event_registrations", force: :cascade do |t|
+    t.integer "event_id"
+    t.integer "user_id"
+    t.integer "amount_paid"
+    t.string  "stripe_id"
+  end
+
+  add_index "event_registrations", ["event_id"], name: "index_event_registrations_on_event_id", using: :btree
+  add_index "event_registrations", ["user_id"], name: "index_event_registrations_on_user_id", using: :btree
+
+  create_table "events", force: :cascade do |t|
+    t.string   "title",       null: false
+    t.text     "description"
+    t.string   "location"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "registrations", force: :cascade do |t|
@@ -110,4 +144,8 @@ ActiveRecord::Schema.define(version: 20151103160324) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", using: :btree
   add_index "users", ["stripe_id"], name: "index_users_on_stripe_id", using: :btree
 
+  add_foreign_key "courses", "events"
+  add_foreign_key "event_discounts", "events"
+  add_foreign_key "event_registrations", "events"
+  add_foreign_key "event_registrations", "users"
 end

@@ -225,13 +225,13 @@ use for www.shaolinstpete.com, too.
 ***** DONE Users created/applications imported
 ***** DONE Course set up
 ***** DONE Course contract plans set up
-** [0%] Release 2
-*** TODO Admin can set up Events
+** [33%] Release 2
+*** DONE Admin can set up Events
 An Event is a camp/workshop/seminar/retreat. Something that runs in a location for a certain date range and has one or more courses. Registration works differently than for individual courses. There are no contracts and no contract plans (only pay-in-full). Simple discounts can be set up for an event and users don't have to submit an application first.
 
 For this story, setting up events through a UI is not required. Being able to set them up via rails console is acceptable. We want to minimize UI until we have enough of a reason to implement a proper frontend with React and friends.
-**** [0/9] Acceptance Criteria
-- [ ] Event model exists with the following fields:
+**** [8/8] Acceptance Criteria
+- [X] Event model exists with the following fields:
   - title
   - description
   - location
@@ -239,25 +239,23 @@ For this story, setting up events through a UI is not required. Being able to se
   - end date
   - has many Courses
   - has many Event Discounts
-- [ ] Event Discount model exists with the following fields:
+- [X] Event Discount model exists with the following fields:
   - event Id
   - description
   - course Ids (array or comma-delimited)
   - price (in cents)
-- [ ] Courses can now optionally belong to an Event
-- [ ] Course start/end dates must be within Event's start/end dates
-- [ ] Either Courses should have an optional base price or there should be an event_courses table that has a price (leaning towards former)
-- [ ] Events are expected to have a corresponding view in app/views/events/<id>-<title>
-- [ ] Event page has a list of event courses (chronological by-end-date) with checkboxes and prices
-- [ ] Checking and unchecking courses changes the total displayed, taking any discounts into account
-- [ ] Once Festival event is created, selecting Crossroads course also selects One Finger Shooting Zen
-*** TODO Users can register for Events
-**** [0/14] Acceptance Criteria
-- [ ] Event Registration model exists with the following fields:
+- [X] Event Registration model exists with the following fields:
   - event id
   - user id
   - amount paid
   - stripe id (for payment)
+- [X] Courses can now optionally belong to an Event
+- [X] Either Courses should have an optional base price or there should be an event_courses table that has a price (leaning towards former)
+- [X] Event page has a list of event courses (chronological by-end-date) with checkboxes and prices
+- [X] Checking and unchecking courses changes the total displayed
+- [X] Discounts are automatically applied and reflected in total amount
+*** TODO Users can register for Events
+**** [0/12] Acceptance Criteria
 - [ ] Registering for an event creates an Event Registration
 - [ ] Registering for an event creates Course Registrations for each course the user registered for
 - [ ] The current Registration model (and table) should become CourseRegistration
@@ -270,6 +268,7 @@ For this story, setting up events through a UI is not required. Being able to se
 - [ ] Event registration payments should attach the event name + registered course titles to the stripe payment for easy lookup later
 - [ ] At least one course must be chosen
 - [ ] Validation works like course registration
+- [ ] Once Festival event is created, registering for Crossroads course also registers for One Finger Shooting Zen (maybe show courses registered on confirmation page with special note about courses registered that the user didn't explicitly pick?). This should ideally not be hard-coded for Festival but be based on inspecting discounts to see if adding any courses will result in no price difference (note that inspection will already happen to auto-apply relevant discounts for cheapest price)
 *** TODO Emails are sent using a transactional email service
 ** [0%] Release 3
 *** TODO App updates contracts on stripe charges

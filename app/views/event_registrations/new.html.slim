@@ -1,0 +1,81 @@
+h2 Registration
+.row
+  .col-md-8
+    .well
+      h3 = @event.title
+      h4 = @event.display_dates
+
+    h4 Discounts
+    table.table.discounts
+      tbody
+        - @event.discounts.each do |discount|
+          tr
+            td = discount.description
+            td.discount id="discount_#{discount.id}" data-price="#{discount.price}" data-course_list="#{discount.course_list}"
+              - if !discount.undiscounted_price.blank?
+                strike = number_to_currency(discount.undiscounted_price / 100)
+              span.accented style="margin-left: 1em;" = number_to_currency(discount.price / 100)
+
+    = simple_form_for @event_registration, url: event_registrations_path(event_id: @event.id), html: {class: "new_event_registration payment_form"} do |f|
+      fieldset
+        legend Choose Courses
+        .row
+          .col.md-6
+            table.table-striped
+              tbody
+                - @courses.each do |course|
+                  tr
+                    td
+                      .checkbox
+                        label
+                          = check_box_tag 'course_regs[course_ids][]', course.id, false, id: "course_regs_course_ids_#{course.id}", 'data-price' => "#{course.base_price}"
+                          = course.title
+                    td style="padding-left: 15px;"
+                      = course.schedule_desc
+                    td style="padding-left: 15px;"
+                      = number_to_currency(course.base_price / 100)
+                tr
+                  td colspan="2" align="right"
+                    strong Total
+                  td.total style="padding-left: 15px;"
+                    strong $0.00
+            = hidden_field_tag 'course_regs[course_ids][]', ''
+
+      fieldset
+        legend Register
+        = simple_fields_for :user do |user_form|
+          .row
+            .col.md-6
+              = user_form.input :name, input_html: {value: @user.name}
+            .col.md-6
+              = user_form.input :email, input_html: {value: @user.email}
+
+        = simple_fields_for :card do |cc_form|
+          .row
+            .col-md-8
+              = cc_form.input :number, label: "Credit card number", input_html: { class: 'card_number', name: nil }
+            .col-md-4
+              = cc_form.input :cvc, label: "CVC", input_html: { class: 'card_cvc', name: nil }
+          .row
+            .col-md-8
+              = cc_form.input :exp_month, label: "Expiration month", collection: @month_options, prompt: "Select month", label_method: :label, value_method: :value, input_html: { class: 'card_exp_month', name: nil }
+            .col-md-4
+              = cc_form.input :exp_year, label: "Expiration year", collection: @year_options, prompt: "Select year", label_method: :label, value_method: :value, input_html: { class: 'card_exp_year', name: nil }
+          .row
+            .col-md-8
+              = cc_form.input :name, label: "Cardholder name", input_html: { class: 'card_name', name: nil }
+            .col-md-4
+              = cc_form.input :address_zip, label: "Zip code", input_html: { class: 'card_address_zip', name: nil }
+      = f.button :submit, "Pay & Register"
+
+coffee:
+  $(document).ready ->
+    $courseSelector = $("input[type='checkbox'][name='course_regs[course_ids][]']")
+    $discounts = $(".discount")
+    isSelected = (input) -> $(input).prop('checked')
+    update = (newTotal) ->
+      formattedTotal = (newTotal / 100).toLocaleString(
+        'en-US', { style: 'currency', currency: 'USD'}
+      )
+      $('.total').html("<strong>#{formattedTotal}</strong>")
+    calc = CourseCalculator($courseSelector, $discounts, isSelected, update)
