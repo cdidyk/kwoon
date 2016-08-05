@@ -225,7 +225,7 @@ use for www.shaolinstpete.com, too.
 ***** DONE Users created/applications imported
 ***** DONE Course set up
 ***** DONE Course contract plans set up
-** [33%] Release 2
+** [100%] Release 2
 *** DONE Admin can set up Events
 An Event is a camp/workshop/seminar/retreat. Something that runs in a location for a certain date range and has one or more courses. Registration works differently than for individual courses. There are no contracts and no contract plans (only pay-in-full). Simple discounts can be set up for an event and users don't have to submit an application first.
 
@@ -254,22 +254,22 @@ For this story, setting up events through a UI is not required. Being able to se
 - [X] Event page has a list of event courses (chronological by-end-date) with checkboxes and prices
 - [X] Checking and unchecking courses changes the total displayed
 - [X] Discounts are automatically applied and reflected in total amount
-*** TODO Users can register for Events
-**** [0/12] Acceptance Criteria
-- [ ] Registering for an event creates an Event Registration
-- [ ] Registering for an event creates Course Registrations for each course the user registered for
-- [ ] The current Registration model (and table) should become CourseRegistration
-- [ ] The event page has a user and CC info section with a "Register" button
-- [ ] User model has a from/location column (optional) for capturing city/state (if USA) or city/country (if not USA)
-- [ ] Registrations for an email not already in the system create a new user and new stripe customer
-- [ ] Registrations for an email already in the system use the existing user/stripe customer
-- [ ] The CC used should become the stripe customer's default source
-- [ ] Event registrations are one-time payments (pay-in-full) only
-- [ ] Event registration payments should attach the event name + registered course titles to the stripe payment for easy lookup later
-- [ ] At least one course must be chosen
-- [ ] Validation works like course registration
-- [ ] Once Festival event is created, registering for Crossroads course also registers for One Finger Shooting Zen (maybe show courses registered on confirmation page with special note about courses registered that the user didn't explicitly pick?). This should ideally not be hard-coded for Festival but be based on inspecting discounts to see if adding any courses will result in no price difference (note that inspection will already happen to auto-apply relevant discounts for cheapest price)
-*** TODO Emails are sent using a transactional email service
+*** DONE Users can register for Events
+**** [13/13] Acceptance Criteria
+- [X] Registering for an event creates an Event Registration
+- [X] Registering for an event creates Course Registrations for each course the user registered for
+- [X] The event page has a user and CC info section with a "Register" button
+- [X] User model has a from/location column (optional) for capturing city/state (if USA) or city/country (if not USA)
+- [X] Registrations for an email not already in the system create a new user and new stripe customer
+- [X] Registrations for an email already in the system use the existing user/stripe customer
+- [X] Event registrations are one-time payments (pay-in-full) only
+- [X] Event registration payments should attach the event name + registered course titles to the stripe payment for easy lookup later
+- [X] At least one course must be chosen
+- [X] Validation works like course registration
+- [X] Successful registration sends an email to registrant and to admin
+- [X] Successful registration displays a confirmation page without much info, since the page will be viewable without login
+- [X] Test with 2016 Festival course/event data
+*** DONE Emails are sent using a transactional email service
 ** [0%] Release 3
 *** TODO App updates contracts on stripe charges
 Stripe will automatically handle subscription billing, but we need to track

@@ -21,14 +21,17 @@ h2 Registration
         legend Choose Courses
         .row
           .col.md-6
-            table.table-striped
+            table.table-striped class="#{@custom_validations[:courses] ? 'has-error' : ''}"
               tbody
+                tr
+                  td colspan="3"
+                    strong.help-block = @custom_validations[:courses]
                 - @courses.each do |course|
                   tr
                     td
                       .checkbox
                         label
-                          = check_box_tag 'course_regs[course_ids][]', course.id, false, id: "course_regs_course_ids_#{course.id}", 'data-price' => "#{course.base_price}"
+                          = check_box_tag 'course_regs[course_ids][]', course.id, @course_regs.course_selected?(course.id), id: "course_regs_course_ids_#{course.id}", 'data-price' => "#{course.base_price}"
                           = course.title
                     td style="padding-left: 15px;"
                       = course.schedule_desc
@@ -39,16 +42,18 @@ h2 Registration
                     strong Total
                   td.total style="padding-left: 15px;"
                     strong $0.00
-            = hidden_field_tag 'course_regs[course_ids][]', ''
 
       fieldset
         legend Register
-        = simple_fields_for :user do |user_form|
+        = simple_fields_for @user do |user_form|
           .row
             .col.md-6
-              = user_form.input :name, input_html: {value: @user.name}
+              = user_form.input :name
             .col.md-6
-              = user_form.input :email, input_html: {value: @user.email}
+              = user_form.input :email
+          .row
+            .col.md-6
+              = user_form.input :hometown, required: false, hint: "City, State if in the US or City, Country otherwise"
 
         = simple_fields_for :card do |cc_form|
           .row
@@ -67,6 +72,8 @@ h2 Registration
             .col-md-4
               = cc_form.input :address_zip, label: "Zip code", input_html: { class: 'card_address_zip', name: nil }
       = f.button :submit, "Pay & Register"
+
+hr
 
 coffee:
   $(document).ready ->

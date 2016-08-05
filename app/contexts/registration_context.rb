@@ -7,7 +7,7 @@ class RegistrationContext
               :user
 
   MESSAGES = {
-    try_again: "There was a problem processing your registration and you weren't charged. Please try again in a few minutes. If the problem persists, contact Sifu Chris Didyk at cdidyk@gmail.com",
+    try_again: "There was a problem processing your registration and you weren't charged. Please try again in a few minutes. If the problem persists, contact Sifu Chris Didyk at sifu.chris@shaolinstpete.com",
     card_declined: "Your card was declined. If this continues to happen, please try a different card."
   }
 
@@ -82,7 +82,7 @@ class RegistrationContext
   end
 
 
-  #REVIEW: look to break this up and ensure a consistent object is returned
+  #TODO: refactor to use StripeService
   def process_deposit
     customer = nil
     if @user.stripe_id
@@ -94,7 +94,7 @@ class RegistrationContext
     end
 
     if customer.respond_to?(:deleted) and customer.deleted
-      Rails.logger.warn "Stripe Customer with id: #{@user.stripe_id} for user: #{@user.name} (id: #{@user.id}) waas deleted. Will attempt to create a new Stripe Customer."
+      Rails.logger.warn "Stripe Customer with id: #{@user.stripe_id} for user: #{@user.name} (id: #{@user.id}) was deleted. Will attempt to create a new Stripe Customer."
       customer = nil
     end
 
