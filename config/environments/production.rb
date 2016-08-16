@@ -72,6 +72,8 @@ Rails.application.configure do
     openssl_verify_mode: "none"
   }
 
+  config.action_mailer.delivery_method = :sparkpost
+
   config.action_controller.default_url_options = {
     host: "kwoon.shaolinstpete.com",
     protocol: "https://"

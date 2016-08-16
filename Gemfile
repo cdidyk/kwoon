@@ -28,6 +28,7 @@ gem 'virtus', require: false
 gem 'whiny_validation'
 gem 'validates_email_format_of', '~> 1.6.3'
 
+gem 'sparkpost_rails', '~> 1.4.0'
 gem 'stripe', '~> 1.30.2'
 
 group :development, :test do

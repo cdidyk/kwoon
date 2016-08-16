@@ -288,6 +288,8 @@ GEM
       bcrypt (~> 3.1)
       oauth (~> 0.4, >= 0.4.4)
       oauth2 (>= 0.8.0)
+    sparkpost_rails (1.4.0)
+      rails (>= 4.0, < 5.1)
     spring (1.4.0)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -378,6 +380,7 @@ DEPENDENCIES
   simple_form
   slim-rails
   sorcery (~> 0.9.1)
+  sparkpost_rails (~> 1.4.0)
   spring
   spring-commands-rspec
   stripe (~> 1.30.2)
