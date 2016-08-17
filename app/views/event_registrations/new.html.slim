@@ -9,9 +9,9 @@ h2 Registration
     table.table.discounts
       tbody
         - @event.discounts.each do |discount|
-          tr
+          tr style="display: #{discount.display? ? 'table-row' : 'none'}"
             td = discount.description
-            td.discount style="display: #{discount.display? ? 'block' : 'none'}" id="discount_#{discount.id}" data-price="#{discount.price}" data-course_list="#{discount.course_list}"
+            td.discount id="discount_#{discount.id}" data-price="#{discount.price}" data-course_list="#{discount.course_list}"
               - if !discount.undiscounted_price.blank?
                 strike = number_to_currency(discount.undiscounted_price / 100)
               span.accented style="margin-left: 1em;" = number_to_currency(discount.price / 100)
