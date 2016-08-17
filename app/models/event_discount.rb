@@ -6,4 +6,8 @@ class EventDiscount < ActiveRecord::Base
     courses = Course.find course_ids
     courses.sum(&:base_price)
   end
+
+  def display?
+    not description.blank?
+  end
 end

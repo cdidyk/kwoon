@@ -11,7 +11,7 @@ h2 Registration
         - @event.discounts.each do |discount|
           tr
             td = discount.description
-            td.discount id="discount_#{discount.id}" data-price="#{discount.price}" data-course_list="#{discount.course_list}"
+            td.discount style="display: #{discount.display? ? 'block' : 'none'}" id="discount_#{discount.id}" data-price="#{discount.price}" data-course_list="#{discount.course_list}"
               - if !discount.undiscounted_price.blank?
                 strike = number_to_currency(discount.undiscounted_price / 100)
               span.accented style="margin-left: 1em;" = number_to_currency(discount.price / 100)
