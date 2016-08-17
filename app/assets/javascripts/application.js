@@ -16,3 +16,4 @@
 //= require turbolinks
 //= require lodash
 //= require payments
+//= require course_calculator

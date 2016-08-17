@@ -1,0 +1,18 @@
+Dear Sifu,
+
+We just received the following registration at shaolinstpete.com:
+
+Name: <%= @user.name %>
+Email: <%= @user.email %>
+
+
+Event: <%= @event.title %>
+Courses: <%= @selected_courses.map(&:title).join(', ') %>
+Paid: <%= number_to_currency(@event_registration.amount_paid / 100) %>
+
+Current Number of Event Registrations: <%= @event_registration_count %>
+Current Event Revenue: <%= number_to_currency(@event.total_paid / 100) %>
+Registrations by Course:
+<%- @course_registration_count.each do |title, count| -%>
+  <%= "  #{title}: #{count}"%>
+<%- end -%>

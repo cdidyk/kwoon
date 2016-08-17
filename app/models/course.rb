@@ -1,4 +1,5 @@
 class Course < ActiveRecord::Base
+  belongs_to :event
   has_many :registrations, inverse_of: :course
   has_many :users, through: :registrations
   has_many :course_contract_plans, inverse_of: :course

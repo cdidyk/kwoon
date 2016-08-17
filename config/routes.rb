@@ -13,6 +13,15 @@ Rails.application.routes.draw do
     resources :registrations, only: [:new, :create]
   end
 
+  get 'events/:event_id/registrations/confirmation' => 'event_registrations#confirmation',
+      as: 'event_registration_confirmation'
+  resources :events, only: [] do
+    resources :event_registrations,
+      path: 'registrations',
+      as: 'registrations',
+      only: [:new, :create]
+  end
+
   post 'webhook' => 'stripe#webhook'
 
   get 'login' => 'sessions#new'

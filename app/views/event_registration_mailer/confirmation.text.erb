@@ -1,0 +1,29 @@
+Dear <%= @user.name %>,
+
+Congratulations! You are successfully registered for <%= @event.title %>.
+
+You've signed up for the following courses:
+
+<%- @selected_courses.each do |course| %>
+  <%= "*  #{course.title}" %>
+  <%= "   #{course.schedule_desc}" %>
+  <%= "\n" %>
+<%- end %>
+Total paid: <%= number_to_currency(@event_registration.amount_paid / 100) %>
+
+
+The courses will be held at:
+
+<%= @event.location %>
+
+I'm happy to answer any questions you have, and I look forward to enjoying Sifu's courses with you.
+
+
+Best wishes,
+
+Sifu Chris Didyk
+Shaolin Wahnam St Pete
+http://shaolinstpete.com
+http://www.facebook.com/ShaolinStPete
+sifu.chris@shaolinstpete.com
+727.453.2490

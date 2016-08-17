@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
   has_many :registrations, inverse_of: :user
   has_many :courses, through: :registrations
   has_many :contracts
+  has_many :event_registrations, inverse_of: :user
+  has_many :events, through: :event_registrations
 
   validates :name, presence: true
   validates :email,

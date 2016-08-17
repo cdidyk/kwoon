@@ -35,6 +35,7 @@ $(document).ready ->
         $errorMsg = $("<span class='help-block'>#{error.message}</span>")
         $(":input.card_#{error.param}").before $errorMsg
         $submit.removeAttr 'disabled'
+        scrollTo 0,0
       else
         token = response.id
         $('.payment_form').append("<input type='hidden' name='stripe_token' value='#{token}' />")
