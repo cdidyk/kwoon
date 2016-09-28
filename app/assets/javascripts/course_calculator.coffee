@@ -13,6 +13,8 @@
         selectedCourses.push course
         totalPrice += course.price
 
+    undiscountedPrice = totalPrice
+
     discounts = []
     $discounts.each (i, el) ->
       $el = $(el)
@@ -32,11 +34,11 @@
         if priceWithDiscount < totalPrice
           totalPrice = priceWithDiscount
 
-    return totalPrice
+    return {totalPrice, undiscountedPrice}
 
   $courseSelector.change (e) ->
-    newTotal = calculate()
-    update(newTotal)
+    {totalPrice, undiscountedPrice} = calculate()
+    update(totalPrice, undiscountedPrice)
 
   return {
     calculate

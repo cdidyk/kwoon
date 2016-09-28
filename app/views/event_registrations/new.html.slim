@@ -21,7 +21,7 @@ h2 Registration
         legend Choose Courses
         .row
           .col.md-6
-            table.table-striped class="#{@custom_validations[:courses] ? 'has-error' : ''}"
+            table.table-striped border="0" class="#{@custom_validations[:courses] ? 'has-error' : ''}"
               tbody
                 tr
                   td colspan="3"
@@ -37,11 +37,11 @@ h2 Registration
                       = course.schedule_desc
                     td style="padding-left: 15px;"
                       = number_to_currency(course.base_price / 100)
-                tr
-                  td colspan="2" align="right"
-                    strong Total
-                  td.total style="padding-left: 15px;"
-                    strong $0.00
+
+            .well.text-center
+              h4 Total Price
+              h5 <s class="fullPrice"></s>
+              h5 <strong class="total">$0.00</strong>
 
       fieldset
         legend Register
@@ -80,9 +80,16 @@ coffee:
     $courseSelector = $("input[type='checkbox'][name='course_regs[course_ids][]']")
     $discounts = $(".discount")
     isSelected = (input) -> $(input).prop('checked')
-    update = (newTotal) ->
+    update = (newTotal, fullPrice) ->
       formattedTotal = (newTotal / 100).toLocaleString(
-        'en-US', { style: 'currency', currency: 'USD'}
+        'en-US', {style: 'currency', currency: 'USD'}
       )
-      $('.total').html("<strong>#{formattedTotal}</strong>")
+      formattedFullPrice = (fullPrice / 100).toLocaleString(
+        'en-US', {style: 'currency', currency: 'USD'}
+      )
+      if newTotal == fullPrice
+        $('.fullPrice').html('')
+      else
+        $('.fullPrice').html(formattedFullPrice)
+      $('.total').html(formattedTotal)
     calc = CourseCalculator($courseSelector, $discounts, isSelected, update)
