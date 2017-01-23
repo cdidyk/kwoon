@@ -271,6 +271,47 @@ For this story, setting up events through a UI is not required. Being able to se
 - [X] Test with 2016 Festival course/event data
 *** DONE Emails are sent using a transactional email service
 ** [0%] Release 3
+*** TODO Chi Kung students apply, register, and pay through Kwoon
+Typical flow is:
+1. user goes to chi kung page on AoA website
+2. user clicks application link, taking them to kwoon application page
+3. user submits application
+4. instructor approves or denies application (also determining what course the user can register for), user is informed (stop here if denied)
+5. user is invited to register for a specific course
+6. user goes to link, sees registration/payment page, submits it, is registered for course
+7. user is emailed confirmation
+8. user is automatically emailed reminder email week before course and then day before course
+**** TODO Applicants pick their interest
+Decide whether to define status system and configure transactional emails through app (a la Admin can send emails to different groupings of users) or automatically add them to a mailchimp mailing list
+***** [0/4] Acceptance Criteria
+- [ ] On application, there is a section for interests with the following (checkbox) options:
+  - Shaolin Cosmos Chi Kung
+  - Shaolin Kung Fu
+  - Wahnam Tai Chi Chuan(?)
+  - Courses with Grandmaster Wong Kiew Kit
+- [ ] At least one interest must be selected
+- [ ] Existing users with applications should be set as interested in Shaolin Kung Fu
+- [ ] Existing users with no applications (i.e. Festival attendees) should be set as interested in Courses with Grandmaster Wong (and other relevant interests based on what I know about them)
+**** TODO First session Chi Kung courses set up in Kwoon
+***** [0/2] Acceptance Criteria
+- [ ] Level 1 course starting 1/31/2017
+- [ ] Level 2 course starting 1/31/2017
+**** TODO Admins can do class CRUD
+***** [0/2] Acceptance Criteria
+- [ ] Only classes with no registrations can be deleted
+- [ ]
+**** TODO Chi Kung payment model is supported
+Level 1 course:
+- students have to do 11 weeks but can start in the middle of one and end in the middle of the next (rolling registration)
+- $495 for 1 11-week course
+- must buy one course at a time (Christina evaluates students after each course to determine whether they should stay in Level 1)
+
+Level 2 course:
+- $495 for 1 11-week course
+- $1500 for the year (all 4 courses, no make ups)
+
+**** TODO New Kung Fu payment model (Monthly/Annual) is supported
+**** TODO New Kung Fu course set up in Kwoon
 *** TODO App updates contracts on stripe charges
 Stripe will automatically handle subscription billing, but we need to track
 status of installment plans to determine when to cancel a subscription. We can
@@ -291,6 +332,7 @@ do this through stripe webhooks
   be made even when stripe is in "live" mode)
 - [ ] don't trust callbacks on their own. Instead, use an incoming callback's id to query Stripe for the event object and work with it instead.
 - [ ] webhook calls are idempotent, meaning that the same call made multiple times yields the same result (e.g. duplicate callbacks don't both update the contract's balance). To achieve this, capture each callback in the db (just enough info to identify it). When a callback comes in, see if it's already in the db and only act on it if it isn't.
+
 ** Backlog
 *** DB backups
 Use something like rsync.net for offsite backups
