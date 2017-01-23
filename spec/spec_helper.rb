@@ -1,4 +1,6 @@
 require 'webmock/rspec'
+require 'dotenv'
+Dotenv.load
 
 VCR.configure do |config|
   config.cassette_library_dir = "support/vcr_cassettes"

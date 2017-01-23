@@ -272,7 +272,7 @@ For this story, setting up events through a UI is not required. Being able to se
 *** DONE Emails are sent using a transactional email service
 ** [0%] Release 3
 *** TODO Chi Kung students apply, register, and pay through Kwoon
-Typical flow is:
+**** Typical flow
 1. user goes to chi kung page on AoA website
 2. user clicks application link, taking them to kwoon application page
 3. user submits application

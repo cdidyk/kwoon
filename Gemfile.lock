@@ -393,5 +393,8 @@ DEPENDENCIES
   webmock (~> 1.22.3)
   whiny_validation
 
+RUBY VERSION
+   ruby 2.2.3p173
+
 BUNDLED WITH
-   1.10.6
+   1.14.2
