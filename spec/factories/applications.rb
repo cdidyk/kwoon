@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :application do
     user
+    interests "Shaolin Kung Fu,Shaolin Cosmos Chi Kung"
     phone Faker::PhoneNumber.phone_number
     address "#{Faker::Address.street_address} #{Faker::Address.city}, #{Faker::Address.state_abbr} #{Faker::Address.zip_code}"
     emergency_contact_name Faker::Name.name

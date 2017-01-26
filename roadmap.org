@@ -281,17 +281,16 @@ For this story, setting up events through a UI is not required. Being able to se
 6. user goes to link, sees registration/payment page, submits it, is registered for course
 7. user is emailed confirmation
 8. user is automatically emailed reminder email week before course and then day before course
-**** TODO Applicants pick their interest
+**** DONE Applicants pick their interest
 Decide whether to define status system and configure transactional emails through app (a la Admin can send emails to different groupings of users) or automatically add them to a mailchimp mailing list
-***** [0/4] Acceptance Criteria
-- [ ] On application, there is a section for interests with the following (checkbox) options:
+***** [4/4] Acceptance Criteria
+- [X] On application, there is a section for interests with the following (checkbox) options:
   - Shaolin Cosmos Chi Kung
   - Shaolin Kung Fu
   - Wahnam Tai Chi Chuan(?)
-  - Courses with Grandmaster Wong Kiew Kit
-- [ ] At least one interest must be selected
-- [ ] Existing users with applications should be set as interested in Shaolin Kung Fu
-- [ ] Existing users with no applications (i.e. Festival attendees) should be set as interested in Courses with Grandmaster Wong (and other relevant interests based on what I know about them)
+- [X] At least one interest must be selected on the application
+- [X] Existing users with applications should be set as interested in Shaolin Kung Fu
+- [X] Existing users with no applications (i.e. Festival attendees) should have no interests unless I know otherwise
 **** TODO First session Chi Kung courses set up in Kwoon
 ***** [0/2] Acceptance Criteria
 - [ ] Level 1 course starting 1/31/2017

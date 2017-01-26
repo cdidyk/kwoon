@@ -3,7 +3,10 @@ RSpec.describe ApplicationsController, type: :controller do
     let(:params) {
       { application:
           attributes_for(:application).
-            merge(user_attributes: attributes_for(:user))
+          merge({
+            interests: ['Shaolin Kung Fu', 'Shaolin Cosmos Chi Kung'],
+            user_attributes: attributes_for(:user)
+          })
       }
     }
     let(:application) {
@@ -24,8 +27,10 @@ RSpec.describe ApplicationsController, type: :controller do
     it "saves the application" do
       expect(Application).
         to receive(:create).
-            with(params[:application]).
-            and_return (application)
+             with(
+               params[:application].
+                 merge(interests: 'Shaolin Kung Fu,Shaolin Cosmos Chi Kung')
+             ).and_return (application)
       post :create, params
     end
 
@@ -46,6 +51,9 @@ RSpec.describe ApplicationsController, type: :controller do
         app_attrs.each_pair do |k,v|
           if k == :ten_shaolin_laws
             expect(new_app.ten_shaolin_laws).to be true
+          elsif k == :interests
+            expect(new_app.interests).
+              to eq('Shaolin Kung Fu,Shaolin Cosmos Chi Kung')
           else
             expect(new_app.attributes[k.to_s]).to eq(v)
           end

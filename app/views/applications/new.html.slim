@@ -6,6 +6,21 @@ p All prospective Shaolin Kung Fu students must complete this application to be 
   .col-md-8
     = simple_form_for @application do |f|
       fieldset
+        legend Shaolin Arts
+        .row
+          .col-md-12
+            div class="#{@application.errors[:interests].blank? ? '' : 'has-error'}"
+              p class="#{@application.errors[:interests].blank? ? '' : 'help-block'}"
+                strong * Which art(s) are you interested in learning?
+              p.help-block
+                = @application.errors[:interests].join(', ')
+              - Application::INTEREST_OPTIONS.each do |interest|
+                .checkbox
+                  label
+                    = check_box_tag 'application[interests][]', interest, @application.interested_in?(interest), id: "application_interests_#{interest.parameterize('_')}"
+                    = interest
+
+      fieldset
         legend Contact Info
         .row
           = f.simple_fields_for :user do |uf|
@@ -30,13 +45,13 @@ p All prospective Shaolin Kung Fu students must complete this application to be 
       fieldset
         legend Background
         = f.input :wahnam_courses, label: 'Classes and courses taken previously from Shaolin Wahnam', hint: "Please include the following if you remember it: course title, year, location, instructor", input_html: { rows: 5 }, placeholder: "Enter \"none\" if you've never learned from Shaolin Wahnam before"
-        = f.input :martial_arts_experience, label: 'Previous martial arts experience', input_html: { rows: 5 }, placeholder: "Enter \"none\" if you've never practiced a martial art before."
+        = f.input :martial_arts_experience, label: 'Previous martial arts/chi kung experience', input_html: { rows: 5 }, placeholder: "Enter \"none\" if you've never practiced a martial art before."
         = f.input :health_issues, label: 'Any relevant health issues', input_html: { rows: 5 }, placeholder: "Enter \"none\" if you have no health issues"
 
       fieldset
         legend About You
         = f.input :bio, label: 'Tell us a little about yourself', input_html: { rows: 5 }
-        = f.input :why_shaolin, label: 'Why Shaolin Kung Fu? How do you want your Shaolin Kung Fu practice to affect your life?', input_html: { rows: 5 }
+        = f.input :why_shaolin, label: 'Why do you want to practice the Shaolin Arts? How do you want your practice to affect your life?', input_html: { rows: 5 }
         = f.input :ten_shaolin_laws, inline_label: "Do you agree to live by the #{link_to '10 Shaolin Laws', 'http://www.shaolin.org/general/laws.html', {target: 'blank'}}?".html_safe
 
       = f.button :submit, 'Submit Application'

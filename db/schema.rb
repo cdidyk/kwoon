@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160812212340) do
+ActiveRecord::Schema.define(version: 20170125051641) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20160812212340) do
     t.boolean  "ten_shaolin_laws"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "interests"
   end
 
   add_index "applications", ["user_id"], name: "index_applications_on_user_id", using: :btree
