@@ -298,7 +298,7 @@ Decide whether to define status system and configure transactional emails throug
 **** TODO Admins can do class CRUD
 ***** [0/2] Acceptance Criteria
 - [ ] Only classes with no registrations can be deleted
-- [ ]
+- [ ] Datepickers for start and end dates
 **** TODO Chi Kung payment model is supported
 Level 1 course:
 - students have to do 11 weeks but can start in the middle of one and end in the middle of the next (rolling registration)
@@ -333,6 +333,8 @@ do this through stripe webhooks
 - [ ] webhook calls are idempotent, meaning that the same call made multiple times yields the same result (e.g. duplicate callbacks don't both update the contract's balance). To achieve this, capture each callback in the db (just enough info to identify it). When a callback comes in, see if it's already in the db and only act on it if it isn't.
 
 ** Backlog
+*** Applicants are automatically added to relevant mailing lists
+use background jobs. Adding to external mailing lists like MailChimp should make it easier/simpler to carry out the actual email campaigns since they can be designed and mostly run through the 3rd party (kwoon's responsibility will be in making sure the mailing lists are populated correctly)
 *** DB backups
 Use something like rsync.net for offsite backups
 *** Clean up stripe callback events db table periodically (and automatically)
