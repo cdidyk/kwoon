@@ -32,12 +32,9 @@ namespace :db do
       ActiveRecord::Base.connection_config
         .select {|k,v| CONFIG_ATTRS.include? k }
     config[:host] ||= "localhost"
-    has_all_config_fields =
-      CONFIG_ATTRS.all? {|x| !config[x].blank? }
+    config[:username] ||= ENV['USER']
 
-    if !has_all_config_fields
-      raise RuntimeError.new("ActiveRecord::Base.connection_config :host, :database, and :username must all exist for db:dump and db:restore to work. Current respective values are: '#{config[:host]}', '#{config[:database]}', and '#{config[:username]}'")
-    end
+    p "DB connection info for dump/restore:\n host: #{config[:host]}\nusername: #{config[:username]}\ndatabase: #{config[:database]}"
 
     yield Rails.application.class.parent_name.underscore,
       config[:host],

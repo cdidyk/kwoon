@@ -1,3 +1,5 @@
+#+TODO: START IN-PROG | DONE
+
 * Kwoon App
 ** [100%] Release 1
 *** DONE App is Bootstrapped
@@ -19,7 +21,7 @@ it works now
 ***** [75%] run install generators for:
 ****** DONE rspec:install
 be rails g rspec:install
-****** TODO pundit:install
+****** START pundit:install
 optional, just generates an application policy with defaults.
 holding off for now
 ****** DONE sorcery:install
@@ -271,7 +273,7 @@ For this story, setting up events through a UI is not required. Being able to se
 - [X] Test with 2016 Festival course/event data
 *** DONE Emails are sent using a transactional email service
 ** [0%] Release 3
-*** TODO Chi Kung students apply, register, and pay through Kwoon
+*** START [33%] Chi Kung students apply, register, and pay through Kwoon
 **** Typical flow
 1. user goes to chi kung page on AoA website
 2. user clicks application link, taking them to kwoon application page
@@ -291,15 +293,16 @@ Decide whether to define status system and configure transactional emails throug
 - [X] At least one interest must be selected on the application
 - [X] Existing users with applications should be set as interested in Shaolin Kung Fu
 - [X] Existing users with no applications (i.e. Festival attendees) should have no interests unless I know otherwise
-**** TODO First session Chi Kung courses set up in Kwoon
+**** DONE Interests are displayed in applications emailed to sifu
+**** START First session Chi Kung courses set up in Kwoon
 ***** [0/2] Acceptance Criteria
 - [ ] Level 1 course starting 1/31/2017
 - [ ] Level 2 course starting 1/31/2017
-**** TODO Admins can do class CRUD
+**** START Admins can do class CRUD
 ***** [0/2] Acceptance Criteria
 - [ ] Only classes with no registrations can be deleted
 - [ ] Datepickers for start and end dates
-**** TODO Chi Kung payment model is supported
+**** START Chi Kung payment model is supported
 Level 1 course:
 - students have to do 11 weeks but can start in the middle of one and end in the middle of the next (rolling registration)
 - $495 for 1 11-week course
@@ -309,9 +312,19 @@ Level 2 course:
 - $495 for 1 11-week course
 - $1500 for the year (all 4 courses, no make ups)
 
-**** TODO New Kung Fu payment model (Monthly/Annual) is supported
-**** TODO New Kung Fu course set up in Kwoon
-*** TODO App updates contracts on stripe charges
+**** IN-PROG New Kung Fu payment model (Monthly/Annual) is supported
+***** Flow
+1. existing students are emailed a registration link
+2. link takes them to registration page just for them (like for Foundations class)
+3. student registers for Weekly Shaolin Kung Fu class, choosing to pay monthly (1-year contract) or for a year up front
+4. if student leaves the class, her contract is suspended or terminated, but she is not unregistered from the class.
+5. when it comes time to renew, student renews contract and remains registered for the course.
+6. if student changes courses, either a relevant existing contract stays in place or a new contract is created that supplants the previous one (previous one is forcibly expired)
+***** [1/3] Acceptance Criteria
+- [X] Stripe Plans for $250/month and $2700/year are created
+- [ ] Weekly Shaolin Kung Fu course is set up with no start or end date (ongoing course) and is invite-only with monthly and annual payment options
+- [ ] Successful registration results in a new appropriate contract and payment for the student, as well as registration in the class
+*** START App updates contracts on stripe charges
 Stripe will automatically handle subscription billing, but we need to track
 status of installment plans to determine when to cancel a subscription. We can
 do this through stripe webhooks
@@ -356,8 +369,8 @@ concurrency, how to check that it's working correctly, and auditing the app to
 ensure there are not thread unsafe happenings that will cause problems.
 *** Site design v2
 **** [0/2] Acceptance Criteria
-***** TODO SW logo in Kwoon header
-***** TODO ?
+***** START SW logo in Kwoon header
+***** START ?
 *** Integration Tests for Registration
 *** App auto-sends renewal notice emails
 *** Admin can manage users
