@@ -9,7 +9,12 @@ class Course < ActiveRecord::Base
 
   DEFAULT_DATE_FORMAT = "%b %d, %Y"
 
+  def ongoing?
+    start_date.nil? and end_date.nil?
+  end
+
   def display_dates
+    return "" if ongoing?
     "#{start_date.strftime(DEFAULT_DATE_FORMAT)} to #{end_date.strftime(DEFAULT_DATE_FORMAT)}"
   end
 end

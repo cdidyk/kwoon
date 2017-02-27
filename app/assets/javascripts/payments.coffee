@@ -59,6 +59,18 @@ $(document).ready ->
 
     "Your card will be charged <strong>#{displayAmount(selectedPlan.total)}</strong> now with no additional payments during the course."
 
+  monthlyAnnualDesc = (selectedPlan) ->
+    if _.isEmpty(selectedPlan)
+      return ''
+
+    "Your card will be charged <strong>#{displayAmount(selectedPlan.deposit)}</strong> now and <strong>#{displayAmount(selectedPlan.payment_amount)}</strong> each month for the next year (<strong>#{displayAmount(selectedPlan.total)}</strong> total in 12 payments)."
+
+  annualDesc = (selectedPlan) ->
+    if _.isEmpty(selectedPlan)
+      return ''
+
+    "Your card will be charged <strong>#{displayAmount(selectedPlan.total)}</strong> now with no additional payments for a year."
+
   planOptions = ->
     $('.payment_desc').data('contractPlans').map (cp) -> JSON.parse(cp)
 
@@ -68,7 +80,14 @@ $(document).ready ->
 
     $('.payment_desc').hide().html ''
 
-    if $selectedPlan.text().match /monthly/i
+    # TODO: move the payment descriptions into the contract plans themselves
+    if $selectedPlan.text().match /weekly.*monthly/i
+      $('.payment_desc').html monthlyAnnualDesc(selectedPlan)
+      $('.payment_desc').show()
+    else if $selectedPlan.text().match /weekly.*annual/i
+      $('.payment_desc').html annualDesc(selectedPlan)
+      $('.payment_desc').show()
+    else if $selectedPlan.text().match /monthly/i
       $('.payment_desc').html monthlyDesc(selectedPlan)
       $('.payment_desc').show()
     else if $selectedPlan.text().match /full/i

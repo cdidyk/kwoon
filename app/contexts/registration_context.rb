@@ -37,8 +37,8 @@ class RegistrationContext
     @contract = Contract.new(
       user: @user,
       status: Contract::STATUSES[:future],
-      start_date: @course.start_date,
-      end_date: @course.end_date,
+      start_date: @course.ongoing? ? Date.today : @course.start_date,
+      end_date: @course.ongoing? ? Date.today.years_since(1) : @course.end_date,
       title: @payment_plan.title,
       total: @payment_plan.total,
       balance: @payment_plan.total,
