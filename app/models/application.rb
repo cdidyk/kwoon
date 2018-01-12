@@ -22,8 +22,7 @@ class Application < ActiveRecord::Base
 
   INTEREST_OPTIONS = [
     'Shaolin Cosmos Chi Kung',
-    'Shaolin Kung Fu',
-    'Tai Chi Chuan'
+    'Shaolin Kung Fu'
   ]
 
   def interests_to_a
