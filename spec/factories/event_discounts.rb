@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :event_discount do
     association :event, strategy: :build
     description 'All Courses'

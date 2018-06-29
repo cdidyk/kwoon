@@ -1,4 +1,4 @@
-class EventRegistration < ActiveRecord::Base
+class EventRegistration < ApplicationRecord
   belongs_to :user, inverse_of: :event_registrations
   belongs_to :event, inverse_of: :registrations
 

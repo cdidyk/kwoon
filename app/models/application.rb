@@ -1,4 +1,4 @@
-class Application < ActiveRecord::Base
+class Application < ApplicationRecord
   belongs_to :user
 
   accepts_nested_attributes_for :user

@@ -5,7 +5,7 @@ require File.expand_path('../../config/environment', __FILE__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'spec_helper'
 require 'rspec/rails'
-require 'factory_girl_rails'
+require 'factory_bot_rails'
 require 'shoulda/matchers'
 require 'validates_email_format_of/rspec_matcher'
 
@@ -37,10 +37,10 @@ end
 ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 
   config.before :suite do
-    FactoryGirl.lint
+    FactoryBot.lint
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with :truncation
   end

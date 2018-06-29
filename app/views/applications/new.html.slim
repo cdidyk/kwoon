@@ -17,7 +17,7 @@ p All prospective Shaolin Kung Fu students must complete this application to be 
               - Application::INTEREST_OPTIONS.each do |interest|
                 .checkbox
                   label
-                    = check_box_tag 'application[interests][]', interest, @application.interested_in?(interest), id: "application_interests_#{interest.parameterize('_')}"
+                    = check_box_tag 'application[interests][]', interest, @application.interested_in?(interest), id: "application_interests_#{interest.parameterize(separator: '_')}"
                     = interest
 
       fieldset

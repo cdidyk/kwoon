@@ -1,6 +1,6 @@
 class ApplicationsController < ApplicationController
-  skip_before_filter :require_login
-  before_filter :require_logged_out
+  skip_before_action :require_login
+  before_action :require_logged_out
 
   def new
     @application = Application.new
@@ -8,11 +8,11 @@ class ApplicationsController < ApplicationController
   end
 
   def create
-    prepped_params = app_params
+    prepped_params = app_params.to_h
     if !prepped_params[:interests].blank?
       prepped_params[:interests] = prepped_params[:interests].join(',')
     end
-    @application = Application.create prepped_params
+    @application = Application.create prepped_params.to_h
     if @application.new_record?
       flash.now[:alert] = "There are some problems with your application that prevented its submission. Please review your application below and re-submit when you have fixed the problems."
       render action: 'new'

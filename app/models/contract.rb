@@ -1,4 +1,4 @@
-class Contract < ActiveRecord::Base
+class Contract < ApplicationRecord
   include ActionView::Helpers::NumberHelper
 
   belongs_to :user
@@ -15,7 +15,7 @@ class Contract < ActiveRecord::Base
   validates :total, presence: true
   validates :user, presence: true
 
-  STATUSES = HashWithIndifferentAccess.new(
+  STATUSES = ActiveSupport::HashWithIndifferentAccess.new(
     future: 'future',
     active: 'active',
     expired: 'expired'

@@ -1,7 +1,7 @@
 class RegistrationsController < ApplicationController
-  skip_before_filter :require_login
-  before_filter :validate_token, except: [:confirmation]
-  before_filter :set_stripe_key
+  skip_before_action :require_login
+  before_action :validate_token, except: [:confirmation]
+  before_action :set_stripe_key
 
   def new
     @user = User.find @decoded_token[:user_id]
@@ -22,14 +22,14 @@ class RegistrationsController < ApplicationController
     @month_options = month_options
     @year_options = year_options
 
-    if @user.blank? or @course.blank? or (params[:registration] and @user.id != params[:registration][:user_id].to_i)
+    if @user.blank? or @course.blank? or (reg_params[:registration] and @user.id != reg_params[:registration][:user_id].to_i)
       flash[:alert] = MESSAGES[:bad_token]
       redirect_to info_path
       return
     end
 
     # REVIEW: use @contract_plans instead of query?
-    payment_plan = @course.contract_plans.where(id: params[:payment_plan]).first
+    payment_plan = @course.contract_plans.where(id: reg_params[:payment_plan]).first
     if payment_plan.blank?
       @custom_validations[:payment_plan] = "must be selected"
       flash.now[:alert] = "There are some problems with your registration that prevented its submission. Please review the form below and re-submit when you have fixed the problems."
@@ -42,7 +42,7 @@ class RegistrationsController < ApplicationController
       course: @course,
       registration: @registration,
       payment_plan: payment_plan,
-      stripe_token: params[:stripe_token]
+      stripe_token: reg_params[:stripe_token]
     )
     result = context.call
     @registration = context.registration
@@ -64,7 +64,7 @@ class RegistrationsController < ApplicationController
   end
 
   def confirmation
-    @course = Course.find params[:course_id]
+    @course = Course.find reg_params[:course_id]
   end
 
 
@@ -104,14 +104,14 @@ class RegistrationsController < ApplicationController
 
   #TODO figure out if additional logging needs to happen for these 404s
   def validate_token
-    if params[:reg_token].blank?
+    if reg_params[:reg_token].blank?
       flash[:alert] = MESSAGES[:blank_token]
       redirect_to info_path
       return
     end
 
     begin
-      @decoded_token = TokenService.decode params[:reg_token]
+      @decoded_token = TokenService.decode reg_params[:reg_token]
     rescue JWT::DecodeError
       flash[:alert] = MESSAGES[:bad_token]
       redirect_to info_path
@@ -124,7 +124,7 @@ class RegistrationsController < ApplicationController
       return
     end
 
-    if params[:course_id].to_i != @decoded_token[:course_id]
+    if reg_params[:course_id].to_i != @decoded_token[:course_id]
       flash[:alert] = MESSAGES[:bad_token]
       redirect_to info_path
       return
@@ -145,5 +145,15 @@ class RegistrationsController < ApplicationController
 
   def set_stripe_key
     @stripe_key = ENV['STRIPE_KEY']
+  end
+
+  private
+
+  def reg_params
+    params
+    # params.require(:course_id, :reg_token)
+    # params
+    #   .permit(:course_id, :reg_token, registration: [:user_id],
+    #           :payment_plan, :stripe_token)
   end
 end

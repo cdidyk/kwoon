@@ -1,4 +1,4 @@
-class Event < ActiveRecord::Base
+class Event < ApplicationRecord
   has_many :courses
   has_many :discounts, class_name: 'EventDiscount'
   has_many :registrations, class_name: 'EventRegistration', inverse_of: :event
