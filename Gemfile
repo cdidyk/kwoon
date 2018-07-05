@@ -1,11 +1,9 @@
 source 'https://rubygems.org'
 
-# can't move to 2.5.0 until upgrading other gems, so might as well upgrade rails first
 ruby '2.5.0'
-# ruby '2.2.3'
 
 gem 'dotenv-rails'
-gem 'rails', '~> 5.2.0' #'4.2.4'
+gem 'rails', '~> 5.2.0'
 gem 'pg', '>= 0.18', '< 2.0'
 
 # REVIEW
@@ -37,8 +35,8 @@ gem 'sorcery', '~> 0.12.0'
 gem 'virtus', require: false
 gem 'whiny_validation'
 gem 'validates_email_format_of', '~> 1.6.3'
-gem 'stripe', '~> 1.30.2'
 
+gem 'stripe', '~> 3.17.0'
 gem 'sparkpost_rails', '~> 1.5.1'
 
 group :development, :test do
