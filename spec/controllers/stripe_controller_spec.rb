@@ -1,14 +1,15 @@
 RSpec.describe StripeController, type: :controller do
   describe "POST webhook" do
     let(:successful_invoice_payment) {
-      File.read(
-        File.expand_path(
-          '../../support/sample_invoice_payment_succeeded.json',
-          __FILE__
-        ))
+      JSON.parse(
+        File.read(
+          File.expand_path(
+            '../../support/sample_invoice_payment_succeeded.json',
+            __FILE__
+          )))
     }
     let(:event) {
-      Stripe::Event.construct_from JSON.parse(successful_invoice_payment)
+      Stripe::Event.construct_from successful_invoice_payment
     }
 
     it "returns a 200 to acknowledge receipt of the event before doing anything else"
@@ -19,14 +20,14 @@ RSpec.describe StripeController, type: :controller do
         to receive(:retrieve).
             with("evt_00000000000000").
             and_return event
-      post :webhook, successful_invoice_payment
+      post :webhook, params: successful_invoice_payment
     end
 
     it "finds the contract associated with the stripe invoice's subscription" do
       pending
       expect(Contract).
         to receive(:find).with(44)
-      post :webhook, successful_invoice_payment
+      post :webhook, params: successful_invoice_payment
     end
 
     context "when the contract can't be found" do

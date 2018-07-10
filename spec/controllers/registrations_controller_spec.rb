@@ -28,25 +28,25 @@ RSpec.describe RegistrationsController, type: :controller do
     it "requires a course" do
       allow(Course).to receive(:find).and_call_original
       expect {
-        get :new, course_id: course.id, reg_token: reg_token
+        get :new, params: { course_id: course.id, reg_token: reg_token }
       }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
 
     it "requires a course registration token" do
-      get :new, course_id: course.id
+      get :new, params: { course_id: course.id }
       expect(response).to have_http_status(302)
       expect(flash[:alert]).to match(/can't register without a registration token/)
     end
 
     it "returns an error message when the token can't be decoded" do
-      get :new, course_id: course.id, reg_token: 'bad token'
+      get :new, params: { course_id: course.id, reg_token: 'bad token' }
       expect(controller).to redirect_to(info_path)
       expect(flash[:alert]).to match(/problem.*invitation/)
     end
 
     it "returns an error message when the token's course doesn't match the URL" do
-      get :new, course_id: '999', reg_token: reg_token
+      get :new, params: { course_id: '999', reg_token: reg_token }
       expect(controller).to redirect_to(info_path)
       expect(flash[:alert]).to match(/problem.*invitation/)
     end
@@ -54,7 +54,7 @@ RSpec.describe RegistrationsController, type: :controller do
     it "returns an error when the token's user can't be found" do
       allow(User).to receive(:find).and_call_original
       expect {
-        get :new, params
+        get :new, params: params
       }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
@@ -67,7 +67,7 @@ RSpec.describe RegistrationsController, type: :controller do
             ttl_in_minutes: 0
           )
       params[:reg_token] = expired_token
-      get :new, params
+      get :new, params: params
       expect(controller).to redirect_to(info_path)
       expect(flash[:alert]).to match(/problem.*invitation/)
     end
@@ -79,7 +79,7 @@ RSpec.describe RegistrationsController, type: :controller do
       reg_token =
         TokenService.generate_course_invite_token user: user, course: course
 
-      get :new, { course_id: course.id, reg_token: reg_token }
+      get :new, params: { course_id: course.id, reg_token: reg_token }
 
       expect(controller).to redirect_to(info_path)
       expect(flash[:alert]).to match(/already registered/i)
@@ -149,7 +149,7 @@ RSpec.describe RegistrationsController, type: :controller do
               with(user, course).
               and_return mail_double
 
-        post :create, params
+        post :create, params: params
       end
 
       it "sends the sifu a new registration email" do
@@ -168,11 +168,11 @@ RSpec.describe RegistrationsController, type: :controller do
               with(user, course).
               and_return mail_double
 
-        post :create, params
+        post :create, params: params
       end
 
       it "redirects to the registration confirmation page" do
-        post :create, params
+        post :create, params: params
 
         expect(response).
           to redirect_to(
@@ -184,7 +184,7 @@ RSpec.describe RegistrationsController, type: :controller do
 
     context "when no payment plan has been selected" do
       it "displays a validation error" do
-        post :create, params.merge({payment_plan: ''})
+        post :create, params: params.merge({payment_plan: ''})
 
         expect(response).
           to render_template(:new)
@@ -204,7 +204,7 @@ RSpec.describe RegistrationsController, type: :controller do
       }
 
       it "redirects to an error page asking the user to request a new invite" do
-        post :create, params
+        post :create, params: params
         expect(response).to redirect_to(info_path)
         expect(flash[:alert]).to match(/problem.*invitation/)
       end
@@ -214,7 +214,7 @@ RSpec.describe RegistrationsController, type: :controller do
       let(:reg_token) { "invalid token value" }
 
       it "displays an error asking the user to request a new invite" do
-        post :create, params
+        post :create, params: params
         expect(response).to redirect_to(info_path)
         expect(flash[:alert]).to match(/problem.*invitation/)
       end
@@ -226,7 +226,7 @@ RSpec.describe RegistrationsController, type: :controller do
       end
 
       it "redirects to the info page with a message that the user is already registered" do
-        post :create, params
+        post :create, params: params
         expect(response).to redirect_to(info_path)
         expect(flash[:alert]).to match(/already registered/)
       end
@@ -235,7 +235,7 @@ RSpec.describe RegistrationsController, type: :controller do
     context "when the user (or course) param doesn't match the one in the token" do
       it "displays an error asking the user to request a new invite" do
         other_user = create :user
-        post :create, params.merge(registration: {user_id: other_user.id})
+        post :create, params: params.merge(registration: {user_id: other_user.id})
 
         expect(response).to redirect_to(info_path)
         expect(flash[:alert]).to match(/problem.*invitation/)
@@ -250,7 +250,7 @@ RSpec.describe RegistrationsController, type: :controller do
       }
 
       it "displays a relevant error message" do
-        post :create, params
+        post :create, params: params
         expect(response).to render_template(:new)
         expect(flash[:alert]).to eq('the sky is falling!')
       end

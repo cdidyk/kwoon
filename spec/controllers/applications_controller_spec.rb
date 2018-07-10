@@ -28,10 +28,12 @@ RSpec.describe ApplicationsController, type: :controller do
       expect(Application).
         to receive(:create).
              with(
-               params[:application].
-                 merge(interests: 'Shaolin Kung Fu,Shaolin Cosmos Chi Kung')
+               ActiveSupport::HashWithIndifferentAccess.new(
+                 params[:application].
+                   merge('interests': 'Shaolin Kung Fu,Shaolin Cosmos Chi Kung',
+                         'ten_shaolin_laws': 'true'))
              ).and_return (application)
-      post :create, params
+      post :create, params: params
     end
 
     context "when the application is valid" do
@@ -39,7 +41,7 @@ RSpec.describe ApplicationsController, type: :controller do
         total_users = User.count
         total_apps = Application.count
 
-        post :create, params
+        post :create, params: params
 
         expect(Application.count).to eq(total_apps + 1)
         expect(User.count).to eq(total_users + 1)
@@ -77,7 +79,7 @@ RSpec.describe ApplicationsController, type: :controller do
               with(application.user).
               and_return mail_double
 
-        post :create, params
+        post :create, params: params
       end
 
       it "emails the application to me" do
@@ -94,7 +96,7 @@ RSpec.describe ApplicationsController, type: :controller do
               with(application).
               and_return mail_double
 
-        post :create, params
+        post :create, params: params
       end
 
       it "displays a thank you screen" do
@@ -107,7 +109,7 @@ RSpec.describe ApplicationsController, type: :controller do
           to receive(:create).
               and_return app_double
 
-        post :create, params
+        post :create, params: params
 
         expect(response).
           to redirect_to(application_confirmation_url)
@@ -120,7 +122,7 @@ RSpec.describe ApplicationsController, type: :controller do
       end
 
       it "displays the form errors" do
-        post :create, params
+        post :create, params: params
         expect(response).to render_template(:new)
       end
 
@@ -131,7 +133,7 @@ RSpec.describe ApplicationsController, type: :controller do
         expect(StudentApplicationMailer).
           to_not receive(:new_application)
 
-        post :create, params
+        post :create, params: params
       end
     end
   end

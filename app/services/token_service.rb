@@ -6,7 +6,7 @@ class TokenService
 
   def self.decode(token, leeway = nil)
     decoded = JWT.decode(token, ENV['JWT_SECRET'])
-    HashWithIndifferentAccess.new decoded[0]
+    ActiveSupport::HashWithIndifferentAccess.new decoded[0]
   end
 
   def self.generate_course_invite_token args={}

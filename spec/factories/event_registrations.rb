@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :event_registration do
     association :user, strategy: :build
     association :event, strategy: :build

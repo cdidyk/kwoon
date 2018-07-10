@@ -1,4 +1,4 @@
-class ContractPlan < ActiveRecord::Base
+class ContractPlan < ApplicationRecord
   has_many :course_contract_plans, inverse_of: :contract_plan
   has_many :courses, through: :course_contract_plans
 

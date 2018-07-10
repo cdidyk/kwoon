@@ -1,4 +1,4 @@
-class CourseContractPlan < ActiveRecord::Base
+class CourseContractPlan < ApplicationRecord
   belongs_to :course, inverse_of: :course_contract_plans
   belongs_to :contract_plan, inverse_of: :course_contract_plans
 

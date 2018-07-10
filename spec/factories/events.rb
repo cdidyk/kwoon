@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :event do
     title "Regional Course with Sifu"
     description Faker::Company.bs

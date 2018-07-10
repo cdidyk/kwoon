@@ -1,6 +1,6 @@
 class StripeController < ApplicationController
   protect_from_forgery except: :webhook
-  skip_before_filter :require_login
+  skip_before_action :require_login
 
   def webhook
     #event = JSON.parse params

@@ -1,4 +1,4 @@
-class Registration < ActiveRecord::Base
+class Registration < ApplicationRecord
   belongs_to :user, inverse_of: :registrations
   belongs_to :course, inverse_of: :registrations
 

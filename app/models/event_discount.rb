@@ -1,4 +1,4 @@
-class EventDiscount < ActiveRecord::Base
+class EventDiscount < ApplicationRecord
   belongs_to :event
 
   def undiscounted_price

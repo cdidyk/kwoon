@@ -291,7 +291,7 @@ RSpec.describe RegistrationContext, type: :context do
               error_messages: {
                 contract: {},
                 registration: {
-                  user: ["can't be blank"]
+                  user: ["must exist", "can't be blank"]
                 }
               }
              )

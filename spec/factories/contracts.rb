@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :contract do
     title Faker::Company.name
     total 100000

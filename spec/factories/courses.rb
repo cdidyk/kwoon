@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :course do
     title Faker::Company.name
     start_date DateTime.now

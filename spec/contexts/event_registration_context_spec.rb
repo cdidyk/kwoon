@@ -371,7 +371,7 @@ RSpec.describe EventRegistrationContext, type: :context do
         .to eq(valid: false,
                error_messages: {
                  event_registration: {
-                   user: ["can't be blank"] },
+                   user: ["must exist", "can't be blank"] },
                  registration: {}
                }
               )
@@ -387,7 +387,7 @@ RSpec.describe EventRegistrationContext, type: :context do
                    user: ["is invalid"]
                  },
                  registration: {
-                   user: ["can't be blank"]
+                   user: ["must exist", "can't be blank"]
                  }
                }
               )
