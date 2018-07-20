@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe EventRegistrationContext, type: :context do
   let(:user) { create :user }
   let(:event) { create :event, title: '2016 Festival' }

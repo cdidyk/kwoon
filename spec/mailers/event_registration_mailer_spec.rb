@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe EventRegistrationMailer, type: :mailer do
   let(:event_reg) {
     build :event_registration, amount_paid: 60000

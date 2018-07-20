@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe ApplicationsController, type: :controller do
   describe "POST create" do
     let(:params) {

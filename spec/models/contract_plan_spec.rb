@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe ContractPlan, type: :model do
   let(:cp) { ContractPlan.new }
 

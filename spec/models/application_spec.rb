@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe Application, type: :model do
   context "validations" do
     let(:application) { Application.new }

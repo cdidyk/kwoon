@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe StudentApplicationMailer, type: :mailer do
  describe ".confirmation" do
    it "generates a confirmation email to the user" do

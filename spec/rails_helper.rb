@@ -3,11 +3,12 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
-require 'spec_helper'
+# require 'spec_helper'
 require 'rspec/rails'
 require 'factory_bot_rails'
 require 'shoulda/matchers'
 require 'validates_email_format_of/rspec_matcher'
+require 'webmock/rspec'
 
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
@@ -15,6 +16,11 @@ Shoulda::Matchers.configure do |config|
     with.library :active_record
     with.library :active_model
   end
+end
+
+VCR.configure do |config|
+  config.cassette_library_dir = "support/vcr_cassettes"
+  config.hook_into :webmock
 end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in

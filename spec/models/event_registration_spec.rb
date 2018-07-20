@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe EventRegistration, type: :model do
   let(:event_registration) { build :event_registration }
 

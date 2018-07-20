@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe Event, type: :model do
   context "validations" do
     let(:event) { Event.new }

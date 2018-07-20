@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe TokenService, type: :service do
   describe ".encode" do
     it "encodes to JWT" do

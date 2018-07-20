@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe CourseContractPlan, type: :model do
   let(:ccp) { build :course_contract_plan }
 

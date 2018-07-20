@@ -1,11 +1,11 @@
-require 'webmock/rspec'
-require 'dotenv'
-Dotenv.load
+# require 'webmock/rspec'
+# require 'dotenv'
+# Dotenv.load
 
-VCR.configure do |config|
-  config.cassette_library_dir = "support/vcr_cassettes"
-  config.hook_into :webmock
-end
+# VCR.configure do |config|
+#   config.cassette_library_dir = "support/vcr_cassettes"
+#   config.hook_into :webmock
+# end
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

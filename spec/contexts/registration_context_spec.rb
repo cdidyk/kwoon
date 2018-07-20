@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe RegistrationContext, type: :context do
   let(:user) { build :user }
   let(:course) {

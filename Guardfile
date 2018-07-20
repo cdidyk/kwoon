@@ -14,10 +14,10 @@ end
 #   end
 # end
 
-guard :rspec, cmd: "bundle exec rspec" do
-  require "guard/rspec/dsl"
-  dsl = Guard::RSpec::Dsl.new(self)
+require "guard/rspec/dsl"
+dsl = Guard::RSpec::Dsl.new(self)
 
+guard :rspec, cmd: "bin/rspec" do
   # Feel free to open issues for suggestions and improvements
 
   # RSpec files
@@ -42,3 +42,10 @@ guard :rspec, cmd: "bundle exec rspec" do
   watch(rails.spec_helper)     { rspec.spec_dir }
   watch(rails.app_controller)  { "#{rspec.spec_dir}/controllers" }
 end
+
+# guard :rspec, cmd: "bundle exec rspec" do
+#   # Ruby files
+#   ruby = dsl.ruby
+#   dsl.watch_spec_files_for(ruby.lib_files)
+#   # dsl.watch_spec_files_for %r{^(lib/domain/.+)\.rb$}
+# end

@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe RegistrationsController, type: :controller do
   describe "GET new" do
     let(:course) { double Course, id: 33  }
