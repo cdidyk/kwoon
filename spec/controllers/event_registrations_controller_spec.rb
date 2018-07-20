@@ -1,5 +1,40 @@
+require 'rails_helper'
+
 RSpec.describe EventRegistrationsController, type: :controller do
   describe "POST create" do
+    let(:params) {
+      { "course_regs" => {"course_ids" => ["1", "7"]},
+        "user" => {"name" => "Bob Bobberson", "email" => "bobb@mailinator.com"},
+        "stripe_token" => "stripe token",
+        "event_id" => "2"
+      }
+    }
+
+    it "calls the EventRegistrationCaseManager with the passed-in params" do
+      cm_args = {
+        user_params: params['user'],
+        course_reg_params: params['course_regs'],
+        payment_token: params['stripe_token'],
+        event_id: params['event_id']
+      }
+
+      cm = EventRegistrationCaseManager.new cm_args
+      allow(cm).to receive(:call).once.and_return({})
+      allow(EventRegistrationCaseManager).
+        to receive(:new).
+             with(cm_args).
+             and_return cm
+
+      expect(cm).to receive(:call).once.and_return({})
+
+      post :create, params: params
+    end
+
+    it "displays the confirmation page when successful"
+    it "re-displays the new page when unsuccessful due to bad user input"
+  end
+
+  describe "POST old_create" do
     let(:params) {
       { "course_regs" => {"course_ids" => ["#{courses[0].id}", "#{courses[1].id}"]},
         "user" => {"name" => "Bob Bobberson", "email" => "bobb@mailinator.com"},
@@ -75,7 +110,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
             and_return [user]
       expect(User).
         not_to receive(:new)
-      post :create, params: params
+      post :old_create, params: params
     end
 
     it "builds a new user if no user is found with the supplied email" do
@@ -85,7 +120,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
       expect(User).
         to receive(:new).
             with('name' => 'Bob Bobberson', 'email' => 'bobb@mailinator.com')
-      post :create, params: params
+      post :old_create, params: params
     end
 
     it "finds the event with the supplied id" do
@@ -93,7 +128,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
         to receive(:find).
             with("#{event.id}").
             and_return event
-      post :create, params: params
+      post :old_create, params: params
     end
 
     it "finds all of the event courses ordered by ascending end date" do
@@ -102,7 +137,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
             with("end_date ASC").
             and_return double("AR::Relation", to_a: [courses[1], courses[2], courses[0]])
 
-      post :create, params: params
+      post :old_create, params: params
     end
 
     context "when no courses are selected" do
@@ -111,7 +146,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
       }
 
       it "displays an error message" do
-        post :create, params: no_course_params
+        post :old_create, params: no_course_params
         expect(flash.now[:alert]).to match(/some problems.*registration/i)
       end
 
@@ -119,7 +154,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
         expect(EventRegistrationContext).
           not_to receive(:new)
 
-        post :create, params: no_course_params
+        post :old_create, params: no_course_params
 
         expect(response).
           to render_template(:new)
@@ -135,7 +170,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
         to receive(:call).
             and_return result
 
-      post :create, params: params
+      post :old_create, params: params
     end
 
     context "when the event registration is successful" do
@@ -145,7 +180,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
               with(event_reg).
               and_return mail_double
 
-        post :create, params: params
+        post :old_create, params: params
       end
 
       it "sends the sifu a new registration email" do
@@ -154,7 +189,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
               with(event_reg).
               and_return mail_double
 
-        post :create, params: params
+        post :old_create, params: params
       end
 
       it "redirects to a confirmation page" do
@@ -163,7 +198,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
               with(event_id: event.id).
               and_return 'event registration confirmation path'
 
-        post :create, params: params
+        post :old_create, params: params
 
         expect(controller)
           .to redirect_to('event registration confirmation path')
@@ -176,7 +211,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
       }
 
       it "renders the new event registration page with a flash message" do
-        post :create, params: params
+        post :old_create, params: params
 
         expect(flash.now[:alert]).to eql('game over')
         expect(controller).

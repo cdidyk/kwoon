@@ -14,6 +14,28 @@ class EventRegistrationsController < ApplicationController
   end
 
   def create
+    result =
+      EventRegistrationCaseManager.
+        new(
+          user_params:
+            params.
+              require(:user).
+              permit(:name, :email, :hometown).to_h,
+          course_reg_params:
+            params.
+              require(:course_regs).
+              permit(course_ids: []).to_h,
+          payment_token: params[:stripe_token],
+          event_id: params[:event_id]
+        ).
+        call
+
+    # TODO: take correct action based on result status
+    # (result.status or result.successful? maybe?)
+  end
+
+  # TODO: remove once new create works satisfactorily
+  def old_create
     @user =
       User.where(email: params[:user][:email]).first ||
       User.new(user_params)

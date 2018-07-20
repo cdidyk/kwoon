@@ -9,6 +9,10 @@ class Event < ApplicationRecord
   #TODO: DRY up -this is in Course, too
   DEFAULT_DATE_FORMAT = "%b %d, %Y"
 
+  def self.find_with_courses_discounts id
+    includes(:courses, :discounts).find id
+  end
+
   def display_dates
     "#{start_date.strftime(DEFAULT_DATE_FORMAT)} to #{end_date.strftime(DEFAULT_DATE_FORMAT)}"
   end

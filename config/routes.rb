@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
   get 'events/:event_id/registrations/confirmation' => 'event_registrations#confirmation',
       as: 'event_registration_confirmation'
+  post 'events/:event_id/registrations/old_create' => 'event_registrations#old_create',
+       as: 'old_create_event_registration'
   resources :events, only: [] do
     resources :event_registrations,
       path: 'registrations',
