@@ -7,10 +7,18 @@ require_relative "../../../lib/domain/use_cases/event_registration"
 require_relative "../../../lib/domain/entities/registrant"
 require_relative "../../../lib/domain/entities/event"
 require_relative "../../../lib/domain/entities/course"
+require_relative "../../../lib/domain/entities/event_registration"
+require_relative "../../../lib/domain/i_payment_gateway"
 
 RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
   let(:i_payment_gateway) {
-    OpenStruct.new()
+    Object.new.tap do |obj|
+      Domain::IPaymentGateway.instance_methods(false).each do |fn|
+        obj.define_singleton_method(fn) do
+          return "#{fn} implemented!"
+        end
+      end
+    end
   }
   let(:event_start) {
     DateTime.now
@@ -89,6 +97,9 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
       selected_courses: [course_dtos[:cosmic_expansion], course_dtos[:energy_flow]]
     }
   }
+  let(:use_case) {
+    Domain::UseCases::EventRegistration.new args
+  }
 
   describe "#initialize" do
     it "initializes the UseCaseResult with the right steps" do
@@ -104,14 +115,12 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
 
     it "builds a registrant from the supplied data" do
       registrant = Domain::Entities::Registrant.new args[:registrant]
-      use_case = Domain::UseCases::EventRegistration.new args
       expect(use_case.registrant).to eq(registrant)
       expect(use_case.registrant.attributes).to eq(registrant.attributes)
     end
 
     it "builds an event (with courses and discounts) from the supplied data" do
       event = Domain::Entities::Event.new args[:event]
-      use_case = Domain::UseCases::EventRegistration.new args
       expect(use_case.event).to eq(event)
       expect(use_case.event.attributes).to eq(event.attributes)
     end
@@ -120,7 +129,6 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
       selected_courses = args[:selected_courses].map do |dto|
         Domain::Entities::Course.from_dto dto
       end
-      use_case = Domain::UseCases::EventRegistration.new args
       expect(use_case.selected_courses).to eq(selected_courses)
       expect(use_case.selected_courses.map(&:attributes)).to eq(selected_courses.map(&:attributes))
     end
@@ -148,16 +156,109 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
         Domain::UseCases::EventRegistration.new args.merge(selected_courses: [nil])
       }.to raise_error(ArgumentError, /Course/)
     end
+
+    it "raises an error if the Payment Gateway doesn't implement the IPaymentGateway interface" do
+      expect {
+        Domain::UseCases::EventRegistration.new(
+          args.merge(payment_gateway: OpenStruct.new)
+        )
+      }.to raise_error(ArgumentError, /IPaymentGateway/)
+    end
   end
 
   describe "#call" do
-    let(:use_case) {
-      Domain::UseCases::EventRegistration.new args
-    }
-
     it "executes the setup_registration step" do
       expect(use_case).to receive(:setup_registration)
       use_case.call
+    end
+  end
+
+  describe "#setup_registration" do
+    it "builds an Event Registration" do
+      use_case.setup_registration
+      expect(use_case.registration.class).to eq(Domain::Entities::EventRegistration)
+      expect(use_case.registration.registrant).to eql(use_case.registrant)
+      expect(use_case.registration.event).to eql(use_case.event)
+      expect(use_case.registration.selected_courses).to eql(use_case.selected_courses)
+    end
+
+    it "fails if there are no selected courses" do
+      use_case = Domain::UseCases::EventRegistration.new(
+        args.merge(selected_courses: [])
+      )
+      result = use_case.setup_registration
+      expect(result.last_completed).to eq(:setup_registration)
+      expect(result.failed).to eq([:setup_registration])
+      expect(result.data[:messages]).
+        to eq(selected_courses: ["Please select at least one course"])
+    end
+
+    it "fails if there are duplicate selected courses" do
+      use_case = Domain::UseCases::EventRegistration.new(
+        args.merge(
+          selected_courses: [
+            course_dtos[:cosmic_expansion],
+            course_dtos[:energy_flow],
+            course_dtos[:cosmic_expansion]])
+      )
+      result = use_case.setup_registration
+      expect(result.last_completed).to eq(:setup_registration)
+      expect(result.failed).to eq([:setup_registration])
+      expect(result.data[:messages]).
+        to eq(selected_courses: ["There was a problem with the courses you selected. Please try again."])
+    end
+
+    it "fails if any of the selected courses are not part of the event" do
+      imposter_course_dto = {
+        "id" => 25,
+        "title" => "Sinew Metamorphosis",
+        "event_id" => 73,
+        "start_date" => event_end,
+        "end_date" => event_end,
+        "base_price" => 30000
+      }
+      use_case = Domain::UseCases::EventRegistration.new(
+        args.merge(
+          selected_courses: [
+            course_dtos[:cosmic_expansion],
+            imposter_course_dto])
+      )
+      result = use_case.setup_registration
+      expect(result.last_completed).to eq(:setup_registration)
+      expect(result.failed).to eq([:setup_registration])
+      expect(result.data[:messages]).
+        to eq(selected_courses: ["There was a problem with the courses you selected. Please try again."])
+    end
+
+    it "fails if the payment token is missing" do
+      use_case =
+        Domain::UseCases::EventRegistration.new args.merge(payment_token: nil)
+      result = use_case.setup_registration
+      expect(result.last_completed).to eq(:setup_registration)
+      expect(result.failed).to eq([:setup_registration])
+      expect(result.data[:messages]).
+        to eq(payment_token: ["Please provide payment info"])
+    end
+
+    it "calculates the total price, including discounts" do
+      use_case.setup_registration
+      expect(use_case.registration.total_price).to eql(50000)
+    end
+
+    it "calculates the total price even when there are no discounts" do
+      use_case = Domain::UseCases::EventRegistration.new(
+        args.merge event: args[:event].merge(discounts: [])
+      )
+      use_case.setup_registration
+      expect(use_case.registration.total_price).to eql(60000)
+    end
+
+    # REVIEW: is there a better test description?
+    it "succeeds if it the event registration is set up successfully" do
+      use_case.setup_registration
+      expect(use_case.result.last_completed).to eq(:setup_registration)
+      expect(use_case.result.passed).to eq([:setup_registration])
+      expect(use_case.result.failed).to eq([])
     end
   end
 end

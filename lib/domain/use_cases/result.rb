@@ -1,20 +1,31 @@
 module Domain
   module UseCases
     class Result
-      attr_reader :steps, :passed, :failed, :state, :data
+      attr_reader :steps, :passed, :failed, :last_completed, :data
 
       def initialize args={}
         @steps = args[:steps]
         @passed = []
         @failed = []
 
-        # possible states are:
-        # :initialize (for when no steps are being run yet)
-        # <steps.each>
-        # :done (for when the use case passed all steps it encountered)
-        @state = :initialize
+        # should be one of the steps
+        @last_completed = nil
 
         @data = {}
+      end
+
+      def fail_step step, fail_data={}
+        # TODO: ensure that step is in @steps
+        @failed << step unless @failed.include? step
+        @last_completed = step
+        @data.merge! fail_data
+      end
+
+      def pass_step step, pass_data={}
+        # TODO: ensure that step is in @steps
+        @passed << step unless @passed.include? step
+        @last_completed = step
+        @data.merge! pass_data
       end
     end
   end
