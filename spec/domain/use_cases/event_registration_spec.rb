@@ -11,14 +11,17 @@ require_relative "../../../lib/domain/entities/event_registration"
 require_relative "../../../lib/domain/i_payment_gateway"
 
 RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
-  let(:i_payment_gateway) {
-    Object.new.tap do |obj|
-      Domain::IPaymentGateway.instance_methods(false).each do |fn|
-        obj.define_singleton_method(fn) do
-          return "#{fn} implemented!"
-        end
-      end
+  class TestGateway
+    include Domain::IPaymentGateway
+
+    # expected args: registration, payment_token, and maybe description? (for metadata)
+    def process_payment args={}
+      return { succeeded: true, data: { customer_id: 'abc123' } }
     end
+  end
+
+  let(:i_payment_gateway) {
+    TestGateway.new
   }
   let(:event_start) {
     DateTime.now
@@ -167,9 +170,10 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
   end
 
   describe "#call" do
-    it "executes the setup_registration step" do
-      expect(use_case).to receive(:setup_registration)
-      use_case.call
+    skip "executes the setup_registration step" do
+      pending "not so useful. Revisit what #call specs should be after implementing the functions it calls."
+      # expect(use_case).to receive(:setup_registration)
+      # use_case.call
     end
   end
 
@@ -259,6 +263,37 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
       expect(use_case.result.last_completed).to eq(:setup_registration)
       expect(use_case.result.passed).to eq([:setup_registration])
       expect(use_case.result.failed).to eq([])
+    end
+  end
+
+  describe "#process_payment" do
+    it "fails when the payment can't be processed" do
+      class FailTestGateway
+        def process_payment args={}
+          return {
+            succeeded: false,
+            data: { customer_id: 'abc123', messages: ["The card number is invalid"] }
+          }
+        end
+      end
+
+      i_payment_gateway = FailTestGateway.new
+      use_case = Domain::UseCases::EventRegistration.new(
+        args.merge payment_gateway: i_payment_gateway
+      )
+      result = use_case.process_payment
+      expect(result.last_completed).to eq(:process_payment)
+      expect(result.failed).to eq([:process_payment])
+      expect(result.data[:messages]).
+        to eq(["The card number is invalid"])
+    end
+
+    it "succeeds when the payment can be processed" do
+      result = use_case.process_payment
+      expect(result.last_completed).to eq(:process_payment)
+      expect(result.passed).to eq([:process_payment])
+      expect(result.data[:messages]).
+        to be_blank
     end
   end
 end

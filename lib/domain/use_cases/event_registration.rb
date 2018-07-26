@@ -41,6 +41,8 @@ module Domain
 
       def call
         setup_registration
+        process_payment
+        finalize_registration
       end
 
       def setup_registration
@@ -88,7 +90,17 @@ module Domain
       end
 
       def process_payment
+        resp = payment_gateway.process_payment(
+          registration: registration,
+          payment_token: payment_token
+        )
+        if resp[:succeeded]
+          result.pass_step(:process_payment, resp[:data])
+        else
+          result.fail_step(:process_payment, resp[:data])
+        end
 
+        result
       end
 
       def finalize_registration
