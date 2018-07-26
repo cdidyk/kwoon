@@ -1,0 +1,12 @@
+# For some reason, setting this up as a different group in the main Guardfile
+# still caused all specs in the spec dir to be run on run_all.
+options = {
+  cmd: "bundle exec rspec -P 'spec/domain/*_spec.rb, spec/domain/**/*_spec.rb'",
+}
+
+guard :rspec, cmd: "bundle exec rspec", run_all: options do
+  # Feel free to open issues for suggestions and improvements
+  watch(%r{^spec/domain/.+_spec\.rb$})
+  watch(%r{^lib/domain/(.+)\.rb$})  { |m| "spec/domain/#{m[1]}_spec.rb" }
+  watch('spec/spec_helper.rb')  { "spec" }
+end

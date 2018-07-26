@@ -3,22 +3,10 @@ guard 'rails' do
   watch(%r{^(config|lib)/.*})
 end
 
-# guard "livereload" do
-#   watch(%r{app/views/.+\.(erb|haml|slim)$})
-#   watch(%r{app/helpers/.+\.rb})
-#   watch(%r{public/.+\.(css|js|html)})
-#   watch(%r{config/locales/.+\.yml})
-#   # Rails Assets Pipeline
-#   watch(%r{(app|vendor)(/assets/\w+/(.+\.(css|js|html|png|jpg))).*}) do |m|
-#     "/assets/#{m[3]}"
-#   end
-# end
-
-require "guard/rspec/dsl"
-dsl = Guard::RSpec::Dsl.new(self)
-
 guard :rspec, cmd: "bin/rspec" do
   # Feel free to open issues for suggestions and improvements
+  require "guard/rspec/dsl"
+  dsl = Guard::RSpec::Dsl.new(self)
 
   # RSpec files
   rspec = dsl.rspec
@@ -42,10 +30,3 @@ guard :rspec, cmd: "bin/rspec" do
   watch(rails.spec_helper)     { rspec.spec_dir }
   watch(rails.app_controller)  { "#{rspec.spec_dir}/controllers" }
 end
-
-# guard :rspec, cmd: "bundle exec rspec" do
-#   # Ruby files
-#   ruby = dsl.ruby
-#   dsl.watch_spec_files_for(ruby.lib_files)
-#   # dsl.watch_spec_files_for %r{^(lib/domain/.+)\.rb$}
-# end
