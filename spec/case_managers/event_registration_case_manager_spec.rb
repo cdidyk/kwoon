@@ -101,12 +101,6 @@ RSpec.describe EventRegistrationCaseManager, type: :case_manager do
       }
     }
 
-    before(:each) do
-      allow(User).
-        to receive(:where).
-             and_return([])
-    end
-
     it "finds the User by email" do
       expect(User).
         to receive(:where).
@@ -116,6 +110,9 @@ RSpec.describe EventRegistrationCaseManager, type: :case_manager do
     end
 
     it "builds a new User using user_params when the User can't be found" do
+      allow(User).
+        to receive(:where).
+             and_return []
       expect(User).
         to receive(:new).
              with(cm.user_params).

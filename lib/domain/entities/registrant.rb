@@ -3,13 +3,14 @@ require_relative './base'
 module Domain
   module Entities
     class Registrant < Base
-      attr_accessor :name, :email, :payment_gateway_id
+      # TODO: change stripe_id to payment_gateway_id throughout system
+      attr_accessor :name, :email, :stripe_id
 
       def attributes
         super.merge(
           'name' => name,
           'email' => email,
-          'payment_gateway_id' => payment_gateway_id
+          'stripe_id' => stripe_id
         )
       end
     end

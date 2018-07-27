@@ -11,6 +11,11 @@ module Domain
         # should be one of the steps
         @last_completed = nil
 
+        # REVIEW: keep an eye on this as it might change a lot
+        # structure: {
+        #   messages: {<attribute>: [<string>]},
+        #   <k>: <primitive value>
+        # }
         @data = {}
       end
 
@@ -18,14 +23,22 @@ module Domain
         # TODO: ensure that step is in @steps
         @failed << step unless @failed.include? step
         @last_completed = step
-        @data.merge! fail_data
+        @data.merge!(fail_data) do |k,ov,nv|
+          ov.respond_to?(:merge!) ? ov.merge!(nv) : nv
+        end
       end
 
       def pass_step step, pass_data={}
         # TODO: ensure that step is in @steps
         @passed << step unless @passed.include? step
         @last_completed = step
-        @data.merge! pass_data
+        @data.merge!(pass_data) do |k,ov,nv|
+          ov.respond_to?(:merge!) ? ov.merge(nv) : nv
+        end
+      end
+
+      def successful?
+        passed.size > 0 && failed.empty?
       end
     end
   end

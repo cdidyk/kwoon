@@ -38,10 +38,10 @@ class EventRegistrationCaseManager
     # REVIEW: perhaps the payment gateway can store the payment token and then
     # the latter wouldn't need to be passed in
     result = Domain::UseCases::EventRegistration.new(
-      registrant: user.to_dto,
+      event: event.to_dto(include: [:courses, :discounts]),
       payment_gateway: StripeGateway.new,
       payment_token: payment_token,
-      event: event.to_dto(include: [:courses, :discounts]),
+      registrant: user.to_dto,
       selected_courses: selected_courses.map(&:to_dto)
     ).call
 

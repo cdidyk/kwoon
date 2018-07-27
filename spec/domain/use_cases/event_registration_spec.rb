@@ -20,6 +20,15 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
     end
   end
 
+  class FailTestGateway
+    def process_payment args={}
+      return {
+        succeeded: false,
+        data: { customer_id: 'abc123', messages: ["The card number is invalid"] }
+      }
+    end
+  end
+
   let(:i_payment_gateway) {
     TestGateway.new
   }
@@ -170,10 +179,53 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
   end
 
   describe "#call" do
-    skip "executes the setup_registration step" do
-      pending "not so useful. Revisit what #call specs should be after implementing the functions it calls."
-      # expect(use_case).to receive(:setup_registration)
-      # use_case.call
+    it "returns its result when it fails the setup_registration step" do
+      use_case =
+        Domain::UseCases::EventRegistration.new args.merge(selected_courses: [])
+      result = use_case.call
+      expect(result.last_completed).to eql(:setup_registration)
+      expect(result.failed).to eql([:setup_registration])
+      expect(result.passed).to eql([])
+      expect(result.data).
+        to eq({
+            messages: {
+              selected_courses: ["Please select at least one course"]
+            }
+          })
+    end
+
+    it "continues when it fails the process_payment step (since it might partially succeed, like creating the customer but failing the payment)" do
+      use_case = Domain::UseCases::EventRegistration.new(
+        args.merge payment_gateway: FailTestGateway.new
+      )
+      result = use_case.call
+      expect(result.last_completed).to eql(:finalize_registration)
+      expect(result.failed).to eql([:process_payment])
+      expect(result.passed).to eql([:setup_registration, :finalize_registration])
+      expect(result.data).
+        to eq({
+            customer_id: 'abc123',
+            dtos: { event_registration: use_case.registration.to_dto },
+            messages: { payment_token: ["The card number is invalid"] }
+          })
+    end
+
+    it "returns its result when it completes the finalize_registration step" do
+      result = use_case.call
+      expect(result.last_completed).to eql(:finalize_registration)
+      expect(result.failed).to eql([])
+      expect(result.passed).
+        to eql([
+          :setup_registration,
+          :process_payment,
+          :finalize_registration
+        ])
+      expect(result.data).
+        to eq({
+          customer_id: 'abc123',
+          messages: {},
+          dtos: { event_registration: use_case.registration.to_dto }
+        })
     end
   end
 
@@ -258,7 +310,7 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
     end
 
     # REVIEW: is there a better test description?
-    it "succeeds if it the event registration is set up successfully" do
+    it "succeeds if the event registration is set up successfully" do
       use_case.setup_registration
       expect(use_case.result.last_completed).to eq(:setup_registration)
       expect(use_case.result.passed).to eq([:setup_registration])
@@ -268,15 +320,6 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
 
   describe "#process_payment" do
     it "fails when the payment can't be processed" do
-      class FailTestGateway
-        def process_payment args={}
-          return {
-            succeeded: false,
-            data: { customer_id: 'abc123', messages: ["The card number is invalid"] }
-          }
-        end
-      end
-
       i_payment_gateway = FailTestGateway.new
       use_case = Domain::UseCases::EventRegistration.new(
         args.merge payment_gateway: i_payment_gateway
@@ -285,7 +328,7 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
       expect(result.last_completed).to eq(:process_payment)
       expect(result.failed).to eq([:process_payment])
       expect(result.data[:messages]).
-        to eq(["The card number is invalid"])
+        to eq(payment_token: ["The card number is invalid"])
     end
 
     it "succeeds when the payment can be processed" do
@@ -294,6 +337,43 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
       expect(result.passed).to eq([:process_payment])
       expect(result.data[:messages]).
         to be_blank
+    end
+  end
+
+  describe "#finalize_registration" do
+    it "updates the Registrant's payment gateway id" do
+      use_case.setup_registration
+      use_case.process_payment
+      use_case.finalize_registration
+      expect(use_case.registrant.stripe_id).to eql('abc123')
+    end
+
+    it "adds a warning to the result when the customer_id is nil" do
+      allow(i_payment_gateway).
+        to receive(:process_payment).
+             and_return succeeded: true, data: { customer_id: nil }
+
+      use_case.setup_registration
+      use_case.process_payment
+      use_case.finalize_registration
+
+      expect(use_case.registrant.stripe_id).to be_nil
+      expect(use_case.result.last_completed).to eq(:finalize_registration)
+      expect(use_case.result.passed).
+        to eq([:setup_registration, :process_payment, :finalize_registration])
+      expect(use_case.result.data[:messages][:registrant]).to eq(["Unable to link registrant to payment gateway customer. The id returned by the payment gateway was nil."])
+    end
+
+    it "succeeds, adding the updated entities to the result data" do
+      use_case.setup_registration
+      use_case.process_payment
+      use_case.finalize_registration
+
+      expect(use_case.result.last_completed).to eq(:finalize_registration)
+      expect(use_case.result.passed).
+        to eq([:setup_registration, :process_payment, :finalize_registration])
+      expect(use_case.result.data[:dtos]).
+        to eq({ event_registration: use_case.registration.to_dto })
     end
   end
 end
