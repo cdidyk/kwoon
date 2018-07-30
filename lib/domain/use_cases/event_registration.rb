@@ -96,8 +96,10 @@ module Domain
 
       def process_payment
         resp = payment_gateway.process_payment(
-          registration: registration,
-          payment_token: payment_token
+          amount: registration.total_price,
+          customer_rep: registrant,
+          payment_token: payment_token,
+          description: "Registration for #{event.title}: #{selected_courses.map(&:title).join(', ')}"
         )
         if resp[:succeeded]
           result.pass_step(:process_payment, resp[:data])
@@ -105,7 +107,7 @@ module Domain
           result.fail_step(
             :process_payment, {
               customer_id: resp.dig(:data, :customer_id),
-              messages: { payment_token: resp.dig(:data, :messages) }
+              messages: resp.dig(:data, :messages)
             })
         end
 

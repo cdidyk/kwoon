@@ -16,7 +16,14 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
 
     # expected args: registration, payment_token, and maybe description? (for metadata)
     def process_payment args={}
-      return { succeeded: true, data: { customer_id: 'abc123' } }
+      return {
+        succeeded: true,
+        data: {
+          customer_id: 'abc123',
+          charge_id: 'def456',
+          messages: {}
+        }
+      }
     end
   end
 
@@ -24,7 +31,11 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
     def process_payment args={}
       return {
         succeeded: false,
-        data: { customer_id: 'abc123', messages: ["The card number is invalid"] }
+        data: {
+          customer_id: 'abc123',
+          charge_id: nil,
+          messages: { payment_token: ["The card number is invalid"] }
+        }
       }
     end
   end
@@ -221,11 +232,12 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
           :finalize_registration
         ])
       expect(result.data).
-        to eq({
-          customer_id: 'abc123',
-          messages: {},
-          dtos: { event_registration: use_case.registration.to_dto }
-        })
+        to eq(
+             customer_id: 'abc123',
+             charge_id: 'def456',
+             messages: {},
+             dtos: { event_registration: use_case.registration.to_dto }
+           )
     end
   end
 
@@ -324,7 +336,9 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
       use_case = Domain::UseCases::EventRegistration.new(
         args.merge payment_gateway: i_payment_gateway
       )
+      use_case.setup_registration
       result = use_case.process_payment
+
       expect(result.last_completed).to eq(:process_payment)
       expect(result.failed).to eq([:process_payment])
       expect(result.data[:messages]).
@@ -332,9 +346,11 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
     end
 
     it "succeeds when the payment can be processed" do
+      use_case.setup_registration
       result = use_case.process_payment
+
       expect(result.last_completed).to eq(:process_payment)
-      expect(result.passed).to eq([:process_payment])
+      expect(result.passed).to eq([:setup_registration, :process_payment])
       expect(result.data[:messages]).
         to be_blank
     end
