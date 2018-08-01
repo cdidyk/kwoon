@@ -32,27 +32,67 @@ class EventRegistrationCaseManager
     event = Event.find_with_courses_discounts @event_id
 
     selected_courses = event.courses.find_all do |c|
-      course_reg_params[:course_ids].include? c.id
+      course_reg_params[:course_ids].include? c.id.to_s
     end
 
-    # REVIEW: perhaps the payment gateway can store the payment token and then
-    # the latter wouldn't need to be passed in
-    result = Domain::UseCases::EventRegistration.new(
+    use_case = Domain::UseCases::EventRegistration.new(
       event: event.to_dto(include: [:courses, :discounts]),
       payment_gateway: StripeGateway.new,
       payment_token: payment_token,
       registrant: user.to_dto,
       selected_courses: selected_courses.map(&:to_dto)
-    ).call
+    )
+    uc_result = use_case.call
 
-    # if result is good, persist changes to models
-    #   update the affected models
-    #   prepare the presenter
-    # else
-    #   put the failure into terms the controller can reason about to
-    #   determine whether to, say, re-render a form with validation marks
-    #   or issue a general "something went wrong" message and report it to the
-    #   developer
-    # end
+    event_reg_dto = uc_result.data.dig :dtos, :event_registration
+    if !event_reg_dto.blank?
+      event_registration = EventRegistration.from_dto event_reg_dto
+      event_registration.event = event
+      event_registration.user = user
+
+      user.attributes.each do |attr,v|
+        user.send "#{attr}=", event_reg_dto.dig("registrant", attr)
+      end
+
+      course_regs = event_reg_dto["selected_courses"].map do |dto|
+        user.registrations.build course_id: dto["id"]
+      end
+    else
+      event_registration = EventRegistration.new user: user, event: event
+
+      if !uc_result.data[:customer_id].blank?
+        user.stripe_id = uc_result.data[:customer_id]
+      end
+    end
+
+    # REVIEW: is it possible to have a charge_id but no event registration?
+    # In that case, we lose the amount_paid value...
+    if !uc_result.data[:charge_id].blank?
+      event_registration.stripe_id = uc_result.data[:charge_id]
+    end
+
+    succeeded = uc_result.successful?
+    if uc_result.successful?
+      begin
+        ActiveRecord::Base.transaction do
+          targets = course_regs + [event_registration]
+          raise ActiveRecord::Rollback unless targets.map(&:save).all?
+        end
+      rescue ActiveRecord::Rollback => e
+        succeeded = false
+      end
+    end
+
+    return {
+      succeeded: succeeded,
+      presenter: OpenStruct.new(
+        user: user,
+        event: event,
+        courses: event.courses,
+        event_registration: event_registration,
+        course_reg_ids: course_reg_params[:course_ids],
+        custom_validations: {}
+      )
+    }
   end
 end

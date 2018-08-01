@@ -8,7 +8,11 @@ class ApplicationRecord < ActiveRecord::Base
 
   # REVIEW: this is probably too simplistic for handling nested attributes. It also
   # assumes dto is a Hash.
-  def from_dto dto
-    self.attributes = dto
+  def self.from_dto dto
+    attrs = new.attributes
+    assignable_attrs = dto.select do |k,v|
+      attrs.include?(k.to_s) && !["created_at", "updated_at"].include?(k.to_s)
+    end
+    new assignable_attrs
   end
 end

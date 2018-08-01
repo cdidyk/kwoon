@@ -308,17 +308,17 @@ RSpec.describe Domain::UseCases::EventRegistration, type: :use_case do
         to eq(payment_token: ["Please provide payment info"])
     end
 
-    it "calculates the total price, including discounts" do
+    it "calculates the amount (to be) paid, including discounts" do
       use_case.setup_registration
-      expect(use_case.registration.total_price).to eql(50000)
+      expect(use_case.registration.amount_paid).to eql(50000)
     end
 
-    it "calculates the total price even when there are no discounts" do
+    it "calculates the amount (to be) paid even when there are no discounts" do
       use_case = Domain::UseCases::EventRegistration.new(
         args.merge event: args[:event].merge(discounts: [])
       )
       use_case.setup_registration
-      expect(use_case.registration.total_price).to eql(60000)
+      expect(use_case.registration.amount_paid).to eql(60000)
     end
 
     # REVIEW: is there a better test description?

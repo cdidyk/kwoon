@@ -19,7 +19,7 @@ RSpec.describe EventRegistrationsController, type: :controller do
       }
 
       cm = EventRegistrationCaseManager.new cm_args
-      allow(cm).to receive(:call).once.and_return({})
+      allow(cm).to receive(:call).once.and_return({ succeeded: false })
       allow(EventRegistrationCaseManager).
         to receive(:new).
              with(cm_args).

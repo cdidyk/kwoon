@@ -3,14 +3,18 @@ class EventRegistrationsController < ApplicationController
   before_action :set_stripe_key
 
   def new
-    @user = User.new
-    @event = Event.find params[:event_id]
-    @courses = @event.courses.order("end_date ASC").to_a
-    @event_registration = EventRegistration.new event: @event, user: @user
-    @course_regs = CourseRegList.new []
-    @custom_validations = {}
-    @month_options = month_options
-    @year_options = year_options
+    user = User.new
+    event = Event.find params[:event_id]
+    @presenter = OpenStruct.new(
+      user: user,
+      event: event,
+      courses: event.courses.order("end_date ASC").to_a,
+      event_registration: EventRegistration.new(event: event, user: user),
+      course_regs: CourseRegList.new([]),
+      custom_validations: {},
+      month_options: month_options,
+      year_options: year_options
+    )
   end
 
   def create
@@ -30,8 +34,24 @@ class EventRegistrationsController < ApplicationController
         ).
         call
 
-    # TODO: take correct action based on result status
-    # (result.status or result.successful? maybe?)
+    if result[:succeeded]
+      @presenter = result[:presenter]
+      @presenter.month_options = month_options
+      @presenter.year_options = year_options
+
+      redirect_to event_registration_confirmation_path(event_id: @presenter.event.id)
+
+    #   EventRegistrationMailer
+    #     .confirmation(@event_registration)
+    #     .deliver_later
+
+    #   EventRegistrationMailer
+    #     .new_registration(@event_registration)
+    #     .deliver_later
+    # else
+    #   flash.now[:alert] = result.message.blank? ? DEFAULT_VALIDATION_FLASH : result.message
+    #   render :new
+    end
   end
 
   # TODO: remove once new create works satisfactorily

@@ -96,7 +96,7 @@ module Domain
 
       def process_payment
         resp = payment_gateway.process_payment(
-          amount: registration.total_price,
+          amount: registration.amount_paid,
           customer_rep: registrant,
           payment_token: payment_token,
           description: "Registration for #{event.title}: #{selected_courses.map(&:title).join(', ')}"

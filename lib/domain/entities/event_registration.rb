@@ -3,7 +3,7 @@ require_relative './base'
 module Domain
   module Entities
     class EventRegistration < Base
-      attr_accessor :event, :registrant, :selected_courses, :total_price
+      attr_accessor :event, :registrant, :selected_courses, :amount_paid
 
       def initialize args={}
         super
@@ -14,7 +14,7 @@ module Domain
           'event' => event,
           'registrant' => registrant,
           'selected_courses' => selected_courses,
-          'total_price' => total_price
+          'amount_paid' => amount_paid
         )
       end
 
@@ -34,9 +34,9 @@ module Domain
         end
 
         if applicable_discounts.empty?
-          @total_price = price_no_discount
+          @amount_paid = price_no_discount
         else
-          @total_price =
+          @amount_paid =
             (applicable_discounts.map(&:price) << price_no_discount).min
         end
       end

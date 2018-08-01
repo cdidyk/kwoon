@@ -2,13 +2,13 @@ h2 Registration
 .row
   .col-md-8
     .well
-      h3 = @event.title
-      h4 = @event.display_dates
+      h3 = @presenter.event.title
+      h4 = @presenter.event.display_dates
 
     h4 Discounts
     table.table.discounts
       tbody
-        - @event.discounts.each do |discount|
+        - @presenter.event.discounts.each do |discount|
           tr style="display: #{discount.display? ? 'table-row' : 'none'}"
             td = discount.description
             td.discount id="discount_#{discount.id}" data-price="#{discount.price}" data-course_list="#{discount.course_list}"
@@ -16,22 +16,22 @@ h2 Registration
                 strike = number_to_currency(discount.undiscounted_price / 100)
               span.accented style="margin-left: 1em;" = number_to_currency(discount.price / 100)
 
-    = simple_form_for @event_registration, url: event_registrations_path(event_id: @event.id), html: {class: "new_event_registration payment_form"} do |f|
+    = simple_form_for @presenter.event_registration, url: event_registrations_path(event_id: @presenter.event.id), html: {class: "new_event_registration payment_form"} do |f|
       fieldset
         legend Choose Courses
         .row
           .col.md-6
-            table.table-striped border="0" class="#{@custom_validations[:courses] ? 'has-error' : ''}"
+            table.table-striped border="0" class="#{@presenter.custom_validations[:courses] ? 'has-error' : ''}"
               tbody
                 tr
                   td colspan="3"
-                    strong.help-block = @custom_validations[:courses]
-                - @courses.each do |course|
+                    strong.help-block = @presenter.custom_validations[:courses]
+                - @presenter.courses.each do |course|
                   tr
                     td
                       .checkbox
                         label
-                          = check_box_tag 'course_regs[course_ids][]', course.id, @course_regs.course_selected?(course.id), id: "course_regs_course_ids_#{course.id}", 'data-price' => "#{course.base_price}"
+                          = check_box_tag 'course_regs[course_ids][]', course.id, @presenter.course_regs.course_selected?(course.id), id: "course_regs_course_ids_#{course.id}", 'data-price' => "#{course.base_price}"
                           = course.title
                     td style="padding-left: 15px;"
                       = course.schedule_desc
@@ -45,7 +45,7 @@ h2 Registration
 
       fieldset
         legend Register
-        = simple_fields_for @user do |user_form|
+        = simple_fields_for @presenter.user do |user_form|
           .row
             .col.md-6
               = user_form.input :name
@@ -63,9 +63,9 @@ h2 Registration
               = cc_form.input :cvc, label: "CVC", input_html: { class: 'card_cvc', name: nil }
           .row
             .col-md-8
-              = cc_form.input :exp_month, label: "Expiration month", collection: @month_options, prompt: "Select month", label_method: :label, value_method: :value, input_html: { class: 'card_exp_month', name: nil }
+              = cc_form.input :exp_month, label: "Expiration month", collection: @presenter.month_options, prompt: "Select month", label_method: :label, value_method: :value, input_html: { class: 'card_exp_month', name: nil }
             .col-md-4
-              = cc_form.input :exp_year, label: "Expiration year", collection: @year_options, prompt: "Select year", label_method: :label, value_method: :value, input_html: { class: 'card_exp_year', name: nil }
+              = cc_form.input :exp_year, label: "Expiration year", collection: @presenter.year_options, prompt: "Select year", label_method: :label, value_method: :value, input_html: { class: 'card_exp_year', name: nil }
           .row
             .col-md-8
               = cc_form.input :name, label: "Cardholder name", input_html: { class: 'card_name', name: nil }
