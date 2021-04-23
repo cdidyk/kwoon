@@ -29,7 +29,7 @@ gem 'simple_form'
 gem 'slim-rails'
 gem 'jquery-rails', '~> 4.3.3'
 gem 'lodash-rails', '~> 4.17.10'
-gem 'sorcery', '~> 0.12.0'
+gem 'sorcery', '~> 0.15.0'
 
 # REVIEW
 gem 'virtus', require: false
