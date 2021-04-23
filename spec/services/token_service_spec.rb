@@ -40,8 +40,6 @@ RSpec.describe TokenService, type: :service do
 
 
     it "generates a JWT with a 'course invite' context, course id, user id, and expiration dateof 3 months" do
-      now = Time.zone.parse "July 4, 2020"
-      allow(Time.zone).to receive(:now).and_return now
       three_months_from_now_in_min = (60 * 24 * 90).minutes.from_now.to_i
 
       token = TokenService.generate_course_invite_token user: user, course: course
